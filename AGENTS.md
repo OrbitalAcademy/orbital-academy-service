@@ -154,4 +154,22 @@ Fase 2 iniciada com estrutura tecnica aprovada:
 - CORS parametrizado por configuracao, com localhost apenas em desenvolvimento.
 - Preparacao estrutural para JWT Bearer futuro, sem autenticação completa.
 
+Fase 3 concluida com fundacao tecnica de autenticacao/autorizacao:
+
+- JWT Bearer configuravel por `Authentication:JwtBearer:Enabled`;
+- autenticacao desabilitada por padrao;
+- validacao obrigatoria de `Authority` e `Audience` quando JWT estiver habilitado;
+- bloqueio de `RequireHttpsMetadata=false` fora de `Development`;
+- `HealthController` publico com `[AllowAnonymous]`;
+- teste estrutural exigindo intencao explicita de acesso em controllers/actions.
+
+Fase 6 executada como auditoria tecnica e documental:
+
+- revisao de documentacao, estrutura, configuracoes, endpoints tecnicos, CORS, JWT, secrets, migrations e testes;
+- CORS endurecido com validacao contra wildcard e origens invalidas;
+- health check tecnico `/health` com acesso anonimo explicito;
+- testes estruturais adicionados para validacao de CORS;
+- relatorio em `docs/reviews/phase-6-general-verification.md`;
+- build e testes reais ainda pendentes por ausencia do SDK `dotnet` no ambiente local usado.
+
 Ainda nao criar funcionalidades de negocio, endpoints funcionais, entidades com regras, migrations, schema final, DbContext de negocio ou autenticacao completa sem autorizacao explicita de fase futura.

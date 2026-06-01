@@ -1,6 +1,6 @@
 # Orbital Academy Service
 
-Servico .NET do projeto Orbital Academy. O repositorio esta na Fase 3: fundacao tecnica de autenticacao/autorizacao, sem implementacao de funcionalidades de negocio.
+Servico .NET do projeto Orbital Academy. O repositorio esta na Fase 6: auditoria geral, correcao de inconsistencias tecnicas e revisao de seguranca, sem implementacao de novas funcionalidades de negocio.
 
 ## Fonte de verdade
 
@@ -228,10 +228,11 @@ Documentacao tecnica da fase:
 
 - `docs/architecture/phase-2-structure-and-security.md`
 - `docs/features/phase-3-authentication-and-authorization.md`
+- `docs/reviews/phase-6-general-verification.md`
 
 ## Instrucoes de execucao
 
-O scaffold mira `net10.0`. O ambiente local usado nesta fase nao tinha SDK `dotnet` instalado, entao os comandos abaixo precisam ser validados depois em uma maquina com .NET 10 SDK:
+O scaffold mira `net10.0`. O ambiente local usado na Fase 6 nao tinha SDK `dotnet` instalado, entao os comandos abaixo precisam ser validados depois em uma maquina com .NET 10 SDK:
 
 ```bash
 dotnet restore OrbitalAcademy.sln
@@ -274,6 +275,21 @@ Authentication__JwtBearer__RequireHttpsMetadata=true
 - `RequireHttpsMetadata=false` e aceito somente em `Development`.
 - Controllers/actions devem declarar explicitamente `[Authorize]` ou `[AllowAnonymous]`.
 - Continuam pendentes: origem de identidade, usuarios, login, senha, refresh token, auditoria, claims e matriz de permissoes.
+
+## Resultado da Fase 6
+
+A Fase 6 revisou documentacao, estrutura, configuracoes, endpoints tecnicos, autenticacao/autorizacao preparada, CORS, secrets, migrations e testes.
+
+Correcoes aplicadas:
+
+- validacao de CORS para rejeitar wildcard, valores vazios e URLs que nao sejam origens HTTP/HTTPS claras;
+- acesso anonimo explicito no health check tecnico `/health`;
+- testes estruturais para a validacao de CORS;
+- relatorio final em `docs/reviews/phase-6-general-verification.md`.
+
+Nao foram criados endpoints de negocio, entidades, migrations, DbContext de negocio, login, cadastro, policies finais ou regras concretas de permissao.
+
+Limitacao da validacao: `dotnet --info` falhou com `dotnet: command not found`, portanto `dotnet restore`, `dotnet build` e `dotnet test` ainda precisam ser executados em ambiente com SDK .NET 10.
 
 ## Resumo do entendimento do projeto
 
