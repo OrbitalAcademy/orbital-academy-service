@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using OrbitalAcademy.Api.Configuration;
 
 namespace OrbitalAcademy.Api.Security;
@@ -8,13 +11,46 @@ public static class SecurityConfigurationExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.Configure<JwtBearerAuthenticationOptions>(
-            configuration.GetSection(JwtBearerAuthenticationOptions.SectionName));
+        services.AddConfiguredAuthentication(configuration);
 
-        services.AddAuthentication();
         services.AddAuthorization();
 
         services.AddConfiguredCors(configuration);
+
+        return services;
+    }
+
+    private static IServiceCollection AddConfiguredAuthentication(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        IConfigurationSection jwtBearerSection = configuration.GetSection(JwtBearerAuthenticationOptions.SectionName);
+
+        services
+            .AddOptions<JwtBearerAuthenticationOptions>()
+            .Bind(jwtBearerSection)
+            .ValidateOnStart();
+
+        services.AddSingleton<IValidateOptions<JwtBearerAuthenticationOptions>, JwtBearerAuthenticationOptionsValidator>();
+
+        JwtBearerAuthenticationOptions jwtBearerOptions = new();
+        jwtBearerSection.Bind(jwtBearerOptions);
+
+        if (jwtBearerOptions.Enabled)
+        {
+            AuthenticationBuilder authentication = services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme);
+
+            authentication.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+            {
+                options.Authority = jwtBearerOptions.Authority;
+                options.Audience = jwtBearerOptions.Audience;
+                options.RequireHttpsMetadata = jwtBearerOptions.RequireHttpsMetadata;
+            });
+        }
+        else
+        {
+            services.AddAuthentication();
+        }
 
         return services;
     }

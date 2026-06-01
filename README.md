@@ -1,6 +1,6 @@
 # Orbital Academy Service
 
-Servico .NET do projeto Orbital Academy. O repositorio esta na Fase 2: estrutura inicial, arquitetura e seguranca, sem implementacao de funcionalidades de negocio.
+Servico .NET do projeto Orbital Academy. O repositorio esta na Fase 3: fundacao tecnica de autenticacao/autorizacao, sem implementacao de funcionalidades de negocio.
 
 ## Fonte de verdade
 
@@ -227,6 +227,7 @@ Responsabilidades:
 Documentacao tecnica da fase:
 
 - `docs/architecture/phase-2-structure-and-security.md`
+- `docs/features/phase-3-authentication-and-authorization.md`
 
 ## Instrucoes de execucao
 
@@ -247,14 +248,32 @@ ConnectionStrings__OrbitalAcademy="Host=localhost;Port=5432;Database=orbital_aca
 
 Nesta fase nao existem migrations, schema final, DbContext de negocio, entidades de dominio ou endpoints funcionais de negocio.
 
+JWT Bearer esta preparado apenas como validacao de tokens externos e fica desabilitado por padrao. Para habilitar em ambiente local controlado, configure:
+
+```bash
+Authentication__JwtBearer__Enabled=true
+Authentication__JwtBearer__Authority=https://identity.local
+Authentication__JwtBearer__Audience=orbital-academy-api
+Authentication__JwtBearer__RequireHttpsMetadata=true
+```
+
 ## Decisoes de seguranca da Fase 2
 
 - Permissoes de `operador`, `lider` e `admin` ainda nao foram confirmadas; nao ha policies finais nem regras concretas de acesso.
-- A arquitetura esta preparada para JWT Bearer futuro, mas a origem final do token sera decidida na Fase 3.
+- A arquitetura esta preparada para JWT Bearer futuro, mas a origem final do token ainda precisa ser definida antes de autenticacao completa.
 - Nao existem login, cadastro, senha, refresh token ou fluxo completo de autenticacao.
 - CORS e configurado por ambiente. Desenvolvimento permite apenas origens localhost documentadas; demonstracao e producao dependem de origens especificas futuras.
 - Nao usar `AllowAnyOrigin` em producao.
 - A API permanece neutra quanto a IIS, gateway ou rede interna; deployment final e decisao de infraestrutura futura.
+
+## Decisoes de seguranca da Fase 3
+
+- JWT Bearer foi adicionado apenas para validacao de tokens externos quando `Authentication:JwtBearer:Enabled` for `true`.
+- A autenticacao segue desabilitada por padrao e o servico nao emite tokens.
+- `Authority` e `Audience` sao obrigatorios quando JWT Bearer estiver habilitado.
+- `RequireHttpsMetadata=false` e aceito somente em `Development`.
+- Controllers/actions devem declarar explicitamente `[Authorize]` ou `[AllowAnonymous]`.
+- Continuam pendentes: origem de identidade, usuarios, login, senha, refresh token, auditoria, claims e matriz de permissoes.
 
 ## Resumo do entendimento do projeto
 

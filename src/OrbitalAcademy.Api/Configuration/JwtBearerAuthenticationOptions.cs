@@ -4,6 +4,8 @@ public sealed class JwtBearerAuthenticationOptions
 {
     public const string SectionName = "Authentication:JwtBearer";
 
+    public bool Enabled { get; init; }
+
     public string? Authority { get; init; }
 
     public string? Audience { get; init; }
