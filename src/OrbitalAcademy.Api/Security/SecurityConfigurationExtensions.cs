@@ -59,8 +59,17 @@ public static class SecurityConfigurationExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        IConfigurationSection corsSection = configuration.GetSection(ConfiguredCorsOptions.SectionName);
+
+        services
+            .AddOptions<ConfiguredCorsOptions>()
+            .Bind(corsSection)
+            .ValidateOnStart();
+
+        services.AddSingleton<IValidateOptions<ConfiguredCorsOptions>, ConfiguredCorsOptionsValidator>();
+
         ConfiguredCorsOptions options = new();
-        configuration.GetSection(ConfiguredCorsOptions.SectionName).Bind(options);
+        corsSection.Bind(options);
 
         services.AddCors(cors =>
         {
