@@ -1,6 +1,6 @@
 # Orbital Academy Service
 
-Documentacao inicial da Fase 1 do projeto Orbital Academy.
+Servico .NET do projeto Orbital Academy. O repositorio esta na Fase 2: estrutura inicial, arquitetura e seguranca, sem implementacao de funcionalidades de negocio.
 
 ## Fonte de verdade
 
@@ -10,11 +10,10 @@ Antes de qualquer decisao tecnica ou implementacao, consulte integralmente:
 
 Esse documento e a unica fonte de verdade para regras de negocio, escopo funcional, entidades, fluxos, permissoes, integracoes, telas, requisitos e decisoes do sistema.
 
-Regras desta fase:
+Regras de trabalho:
 
 - Nao inventar regra de negocio.
-- Nao implementar funcionalidades.
-- Nao criar a estrutura completa da solucao.
+- Nao implementar funcionalidades sem autorizacao explicita de fase futura.
 - Registrar ambiguidades como perguntas pendentes.
 - Trabalhar por fases pequenas, revisaveis e seguras.
 
@@ -169,12 +168,12 @@ Os endpoints abaixo estao descritos como minimos no documento. Esta fase nao imp
 
 Tecnologias citadas no documento:
 
-- Dados: SQLite no prototipo; PostgreSQL ou SQL Server se houver folga.
+- Dados: PostgreSQL foi confirmado como banco oficial do projeto.
 - IA/ML: Python, Jupyter, pandas, scikit-learn.
 - Otimizacao: Python, PuLP ou implementacao propria com busca local ou algoritmo genetico.
 - Visao: Python, OpenCV, MediaPipe.
 - API principal: Python, FastAPI, Pydantic, Uvicorn.
-- Servico de Catalogo: C#, .NET Core API, EF Core e banco relacional.
+- Servico de Catalogo: ASP.NET Core Web API com Controllers, .NET 10 LTS, EF Core e PostgreSQL via Npgsql.
 - Mobile/Web: React Native, Expo, AsyncStorage e TypeScript.
 - Infra/SO: Windows Server, AD, DNS, IIS e DR para datacenter espacial.
 - Seguranca: JWT/IAM, TLS, hardening GPO, logs e backup.
@@ -199,15 +198,63 @@ Controles minimos documentados:
 - Monitoramento de logs.
 - Backup e recuperacao, incluindo DR espacial.
 
-## Instrucoes iniciais de execucao
+## Estrutura tecnica da Fase 2
 
-Ainda nao ha aplicacao executavel neste repositorio. A Fase 1 nao cria solucao .NET, API, banco, app, scripts de build ou estrutura de codigo.
+Estrutura criada para a Fase 2:
 
-Estado atual esperado apos a Fase 1:
+```text
+OrbitalAcademy.sln
+src/
+  OrbitalAcademy.Api/
+  OrbitalAcademy.Application/
+  OrbitalAcademy.Domain/
+  OrbitalAcademy.Infrastructure/
+tests/
+  OrbitalAcademy.ArchitectureTests/
+docs/
+  architecture/
+    phase-2-structure-and-security.md
+```
 
-- `README.md` com documentacao inicial.
-- `AGENTS.md` com regras de trabalho para agentes.
-- Documento base preservado para consulta.
+Responsabilidades:
+
+- `OrbitalAcademy.Api`: camada HTTP com Controllers, health check tecnico, ProblemDetails, CORS por configuracao e preparacao para autenticacao/autorizacao futura.
+- `OrbitalAcademy.Application`: camada futura de casos de uso e validacoes de aplicacao.
+- `OrbitalAcademy.Domain`: camada futura de dominio do catalogo, sem entidades nesta fase.
+- `OrbitalAcademy.Infrastructure`: camada futura de persistencia e integracoes, preparada para EF Core + Npgsql.
+- `OrbitalAcademy.ArchitectureTests`: testes estruturais sem regras de negocio.
+
+Documentacao tecnica da fase:
+
+- `docs/architecture/phase-2-structure-and-security.md`
+
+## Instrucoes de execucao
+
+O scaffold mira `net10.0`. O ambiente local usado nesta fase nao tinha SDK `dotnet` instalado, entao os comandos abaixo precisam ser validados depois em uma maquina com .NET 10 SDK:
+
+```bash
+dotnet restore OrbitalAcademy.sln
+dotnet build OrbitalAcademy.sln
+dotnet test OrbitalAcademy.sln
+dotnet run --project src/OrbitalAcademy.Api/OrbitalAcademy.Api.csproj
+```
+
+A connection string de PostgreSQL nao deve ser versionada. Use variavel de ambiente ou user-secrets:
+
+```bash
+ConnectionStrings__OrbitalAcademy="Host=localhost;Port=5432;Database=orbital_academy;Username=orbital_app;Password=..."
+```
+
+Nesta fase nao existem migrations, schema final, DbContext de negocio, entidades de dominio ou endpoints funcionais de negocio.
+
+## Decisoes de seguranca da Fase 2
+
+- Permissoes de `operador`, `lider` e `admin` ainda nao foram confirmadas; nao ha policies finais nem regras concretas de acesso.
+- A arquitetura esta preparada para JWT Bearer futuro, mas a origem final do token sera decidida na Fase 3.
+- Nao existem login, cadastro, senha, refresh token ou fluxo completo de autenticacao.
+- CORS e configurado por ambiente. Desenvolvimento permite apenas origens localhost documentadas; demonstracao e producao dependem de origens especificas futuras.
+- Nao usar `AllowAnyOrigin` em producao.
+- A API permanece neutra quanto a IIS, gateway ou rede interna; deployment final e decisao de infraestrutura futura.
 
 ## Resumo do entendimento do projeto
 
@@ -215,4 +262,17 @@ O Orbital Academy deve ser construido como uma solucao integrada da Global Solut
 
 O MVP foca em risco em lavoura. O diferencial nao e detectar melhor que NASA ou INPE, mas usar dados abertos para apoiar decisao de alocacao de recursos limitados. O modelo de ML gera risco e explicacao; a camera traz ground-truth; o otimizador transforma risco em alocacao; o app garante operacao offline; a API e o servico .NET integram os artefatos; a seguranca protege a decisao e os dados; o DR sustenta continuidade.
 
-O servico .NET de Catalogo e a frente esperada para este repositorio, mas a estrutura final ainda deve ser proposta e validada na Fase 2 antes de criar arquivos de projeto.
+O servico .NET de Catalogo e a frente esperada para este repositorio. Para a Fase 2, foi confirmado que ele deve seguir o plano principal: API C#/.NET com EF Core e banco relacional PostgreSQL. A estrutura inicial foi criada sem funcionalidades de negocio, deixando contratos, entidades, migrations e autenticacao completa para fases futuras autorizadas.
+
+## Decisoes confirmadas apos a Fase 1
+
+As respostas abaixo passam a orientar a Fase 2:
+
+- O servico .NET deve seguir o plano principal de API com EF Core e banco relacional.
+- O banco do servico .NET sera PostgreSQL.
+- A autenticacao sera integrada posteriormente ao restante do sistema. Esta frente deve ser tratada como parte de um quebra-cabeca maior, sem fechar agora uma fonte propria de autenticacao como JWT proprio, AD ou mock definitivo.
+- Em decisao tecnica posterior, a solution foi definida como `OrbitalAcademy.sln`.
+- A API deve usar ASP.NET Core Web API com Controllers.
+- O alvo tecnico e .NET 10 LTS (`net10.0`), com validacao de build pendente ate haver SDK local.
+- O projeto `Infrastructure` fica preparado para EF Core + `Npgsql.EntityFrameworkCore.PostgreSQL`, sem migrations, DbContext de negocio ou schema final nesta fase.
+- Autenticacao completa, origem do token, matriz de permissoes e escrita do catalogo ficam para fases futuras autorizadas.

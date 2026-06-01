@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <ItemGroup>
+    <ProjectReference Include="..\OrbitalAcademy.Application\OrbitalAcademy.Application.csproj" />
+    <ProjectReference Include="..\OrbitalAcademy.Infrastructure\OrbitalAcademy.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>

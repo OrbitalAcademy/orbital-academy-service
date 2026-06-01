@@ -1,0 +1,45 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrbitalAcademy.Api", "src\OrbitalAcademy.Api\OrbitalAcademy.Api.csproj", "{F32E525F-C99F-4D28-A3DF-A786E619258A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrbitalAcademy.Application", "src\OrbitalAcademy.Application\OrbitalAcademy.Application.csproj", "{5E70A066-B74C-44FD-8180-79C4C3783A7C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrbitalAcademy.Domain", "src\OrbitalAcademy.Domain\OrbitalAcademy.Domain.csproj", "{8F0CB682-E7A8-4553-A7A4-0D8548297779}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrbitalAcademy.Infrastructure", "src\OrbitalAcademy.Infrastructure\OrbitalAcademy.Infrastructure.csproj", "{3F3B184F-263B-44F1-8D9D-C7E1DAD9F4D1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrbitalAcademy.ArchitectureTests", "tests\OrbitalAcademy.ArchitectureTests\OrbitalAcademy.ArchitectureTests.csproj", "{B35F5211-F9E3-4E25-B875-D55FA1743199}"
+EndProject
+Global
+  GlobalSection(SolutionConfigurationPlatforms) = preSolution
+    Debug|Any CPU = Debug|Any CPU
+    Release|Any CPU = Release|Any CPU
+  EndGlobalSection
+  GlobalSection(ProjectConfigurationPlatforms) = postSolution
+    {F32E525F-C99F-4D28-A3DF-A786E619258A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+    {F32E525F-C99F-4D28-A3DF-A786E619258A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+    {F32E525F-C99F-4D28-A3DF-A786E619258A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+    {F32E525F-C99F-4D28-A3DF-A786E619258A}.Release|Any CPU.Build.0 = Release|Any CPU
+    {5E70A066-B74C-44FD-8180-79C4C3783A7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+    {5E70A066-B74C-44FD-8180-79C4C3783A7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+    {5E70A066-B74C-44FD-8180-79C4C3783A7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+    {5E70A066-B74C-44FD-8180-79C4C3783A7C}.Release|Any CPU.Build.0 = Release|Any CPU
+    {8F0CB682-E7A8-4553-A7A4-0D8548297779}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+    {8F0CB682-E7A8-4553-A7A4-0D8548297779}.Debug|Any CPU.Build.0 = Debug|Any CPU
+    {8F0CB682-E7A8-4553-A7A4-0D8548297779}.Release|Any CPU.ActiveCfg = Release|Any CPU
+    {8F0CB682-E7A8-4553-A7A4-0D8548297779}.Release|Any CPU.Build.0 = Release|Any CPU
+    {3F3B184F-263B-44F1-8D9D-C7E1DAD9F4D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+    {3F3B184F-263B-44F1-8D9D-C7E1DAD9F4D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+    {3F3B184F-263B-44F1-8D9D-C7E1DAD9F4D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+    {3F3B184F-263B-44F1-8D9D-C7E1DAD9F4D1}.Release|Any CPU.Build.0 = Release|Any CPU
+    {B35F5211-F9E3-4E25-B875-D55FA1743199}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+    {B35F5211-F9E3-4E25-B875-D55FA1743199}.Debug|Any CPU.Build.0 = Debug|Any CPU
+    {B35F5211-F9E3-4E25-B875-D55FA1743199}.Release|Any CPU.ActiveCfg = Release|Any CPU
+    {B35F5211-F9E3-4E25-B875-D55FA1743199}.Release|Any CPU.Build.0 = Release|Any CPU
+  EndGlobalSection
+  GlobalSection(SolutionProperties) = preSolution
+    HideSolutionNode = FALSE
+  EndGlobalSection
+EndGlobal

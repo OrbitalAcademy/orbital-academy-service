@@ -51,6 +51,12 @@ Se algo estiver ambiguo, incompleto ou ausente, pare e registre uma pergunta pen
 - Definir padroes de configuracao, secrets, logs, validacoes, erros e autenticacao futura.
 - Criar documentacao tecnica inicial de arquitetura e seguranca.
 - Nao implementar regra de negocio sem autorizacao explicita.
+- Estrutura validada atual: `OrbitalAcademy.sln`, `src/OrbitalAcademy.Api`, `src/OrbitalAcademy.Application`, `src/OrbitalAcademy.Domain`, `src/OrbitalAcademy.Infrastructure` e `tests/OrbitalAcademy.ArchitectureTests`.
+- Usar ASP.NET Core Web API com Controllers e alvo `net10.0`.
+- PostgreSQL e o banco oficial; preparar EF Core + Npgsql apenas quando autorizado e sem migrations/schema final nesta fase.
+- Preparar autenticacao/autorizacao apenas de forma estrutural para JWT Bearer e roles/policies futuras.
+- Nao criar login, cadastro, senha, refresh token, policies finais ou regras concretas de acesso nesta fase.
+- Configurar CORS por ambiente; nao usar `AllowAnyOrigin` em producao.
 
 ### Fases seguintes
 
@@ -126,9 +132,9 @@ Pare e pergunte quando:
 - a implementacao exigir uma fase futura ainda nao autorizada;
 - for necessario escolher entre alternativas que o documento deixa abertas.
 
-## Estado atual da Fase 1
+## Estado atual do projeto
 
-Esta fase permite somente documentacao inicial:
+Fase 1 concluida com documentacao inicial:
 
 - `README.md`;
 - `AGENTS.md`;
@@ -136,4 +142,16 @@ Esta fase permite somente documentacao inicial:
 - resumo de entendimento do projeto;
 - plano sugerido para Fase 2.
 
-Nao criar solucao .NET, projetos, endpoints, banco, migracoes ou funcionalidades nesta fase.
+Fase 2 iniciada com estrutura tecnica aprovada:
+
+- `OrbitalAcademy.sln`;
+- API ASP.NET Core com Controllers mirando `net10.0`;
+- camadas `Api`, `Application`, `Domain` e `Infrastructure`;
+- testes estruturais em `tests/OrbitalAcademy.ArchitectureTests`;
+- documentacao tecnica em `docs/architecture/phase-2-structure-and-security.md`;
+- PostgreSQL definido como banco oficial;
+- Infrastructure preparada para EF Core + Npgsql.
+- CORS parametrizado por configuracao, com localhost apenas em desenvolvimento.
+- Preparacao estrutural para JWT Bearer futuro, sem autenticação completa.
+
+Ainda nao criar funcionalidades de negocio, endpoints funcionais, entidades com regras, migrations, schema final, DbContext de negocio ou autenticacao completa sem autorizacao explicita de fase futura.

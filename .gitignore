@@ -1,0 +1,46 @@
+# Build output
+bin/
+obj/
+out/
+publish/
+TestResults/
+coverage/
+*.trx
+*.coverage
+*.coveragexml
+*.lcov
+
+# IDE/editor state
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local configuration and secrets
+appsettings.Local.json
+appsettings.*.Local.json
+*.secrets.json
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+
+# NuGet
+*.nupkg
+packages/
+.nuget/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
