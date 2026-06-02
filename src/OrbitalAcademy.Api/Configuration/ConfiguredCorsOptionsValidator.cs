@@ -41,7 +41,8 @@ public sealed class ConfiguredCorsOptionsValidator : IValidateOptions<Configured
             return false;
         }
 
-        bool hasSupportedScheme = uri.Scheme is Uri.UriSchemeHttp or Uri.UriSchemeHttps;
+        bool hasSupportedScheme = string.Equals(uri.Scheme, Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(uri.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase);
         bool hasOnlyOriginParts = uri.AbsolutePath is "" or "/" &&
             string.IsNullOrEmpty(uri.Query) &&
             string.IsNullOrEmpty(uri.Fragment);
