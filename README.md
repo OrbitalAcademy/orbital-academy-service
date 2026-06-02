@@ -228,6 +228,7 @@ Documentacao tecnica da fase:
 
 - `docs/architecture/phase-2-structure-and-security.md`
 - `docs/features/phase-3-authentication-and-authorization.md`
+- `docs/features/phase-7-mvp-endpoints-base.md`
 - `docs/reviews/phase-6-general-verification.md`
 
 ## Instrucoes de execucao
@@ -238,7 +239,31 @@ O scaffold mira `net10.0`. O ambiente local usado na Fase 6 nao tinha SDK `dotne
 dotnet restore OrbitalAcademy.sln
 dotnet build OrbitalAcademy.sln
 dotnet test OrbitalAcademy.sln
-dotnet run --project src/OrbitalAcademy.Api/OrbitalAcademy.Api.csproj
+dotnet run --project src/OrbitalAcademy.Api/OrbitalAcademy.Api.csproj --launch-profile http
+```
+
+Em ambiente `Development`, a documentacao interativa dos endpoints fica disponivel em:
+
+```text
+http://localhost:5048/swagger
+```
+
+O documento OpenAPI fica em:
+
+```text
+http://localhost:5048/swagger/v1/swagger.json
+```
+
+Se preferir executar pelo perfil HTTPS, gere o certificado local antes:
+
+```bash
+dotnet dev-certs https
+```
+
+Em Windows ou macOS, tambem e possivel confiar o certificado com:
+
+```bash
+dotnet dev-certs https --trust
 ```
 
 A connection string de PostgreSQL nao deve ser versionada. Use variavel de ambiente ou user-secrets:
@@ -247,7 +272,7 @@ A connection string de PostgreSQL nao deve ser versionada. Use variavel de ambie
 ConnectionStrings__OrbitalAcademy="Host=localhost;Port=5432;Database=orbital_academy;Username=orbital_app;Password=..."
 ```
 
-Nesta fase nao existem migrations, schema final, DbContext de negocio, entidades de dominio ou endpoints funcionais de negocio.
+Nesta fase nao existem migrations, schema final, DbContext de negocio, entidades de dominio ou endpoints funcionais de negocio com persistencia. A Fase 7 criou apenas a base HTTP dos endpoints minimos, com contratos iniciais e respostas vazias ou estruturais.
 
 JWT Bearer esta preparado apenas como validacao de tokens externos e fica desabilitado por padrao. Para habilitar em ambiente local controlado, configure:
 
@@ -290,6 +315,42 @@ Correcoes aplicadas:
 Nao foram criados endpoints de negocio, entidades, migrations, DbContext de negocio, login, cadastro, policies finais ou regras concretas de permissao.
 
 Limitacao da validacao: `dotnet --info` falhou com `dotnet: command not found`, portanto `dotnet restore`, `dotnet build` e `dotnet test` ainda precisam ser executados em ambiente com SDK .NET 10.
+
+## Resultado da Fase 7
+
+A Fase 7 criou a base dos endpoints minimos no servico .NET por decisao explicita desta fase, mesmo que o documento base indique que parte da orquestracao final pode ficar na API Python principal.
+
+Endpoints criados:
+
+- `GET /areas`;
+- `GET /risco/ranking`;
+- `GET /catalogo/satelites`;
+- `GET /missoes`;
+- `POST /missoes`;
+- `PATCH /missoes/{id}/status`;
+- `POST /validar`;
+- `POST /otimizar`;
+- `GET /indicadores`.
+
+Todos os endpoints de negocio usam `[Authorize]` generico. Somente os health checks tecnicos permanecem anonimos. Esta fase nao criou policies finais por papel, login proprio, persistencia, migrations, integracoes com ML/Python ou regras de negocio reais.
+
+Swagger/OpenAPI foi adicionado apenas em `Development`, com esquema Bearer para tokens JWT futuros. Essa configuracao nao cria login nem emite tokens.
+
+Papeis oficiais mantidos para a matriz futura:
+
+- `operador`;
+- `lider`;
+- `admin`.
+
+Perguntas pendentes da Fase 7:
+
+- Quais claims representarao `operador`, `lider` e `admin` no JWT?
+- Quais campos definitivos de Satelite, Sensor e Alerta entram no contrato publico?
+- Quais campos sao obrigatorios para criar uma missao?
+- Quais transicoes de status de missao sao permitidas?
+- `/validar` recebe imagem, inferencia ja processada ou ambos?
+- `/otimizar` chama servico Python externo ou apenas recebe e retorna uma simulacao?
+- Quais metricas entram em `/indicadores` na primeira versao funcional?
 
 ## Resumo do entendimento do projeto
 
