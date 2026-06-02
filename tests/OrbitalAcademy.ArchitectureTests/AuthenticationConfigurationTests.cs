@@ -77,7 +77,7 @@ public sealed class AuthenticationConfigurationTests
 
     private static Microsoft.Extensions.Options.ValidateOptionsResult Validate(
         JwtBearerAuthenticationOptions options,
-        string environmentName = Environments.Production)
+        string environmentName = "Production")
     {
         JwtBearerAuthenticationOptionsValidator validator = new(environmentName);
 
