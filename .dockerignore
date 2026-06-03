@@ -1,0 +1,11 @@
+.git
+.idea
+.agents
+.codex
+**/bin
+**/obj
+docker-compose.yml
+*.user
+*.suo
+*.swp
+*.tmp
