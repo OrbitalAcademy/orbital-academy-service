@@ -81,6 +81,8 @@ Subir API e PostgreSQL:
 docker compose up --build
 ```
 
+Se precisar recriar a configuracao local, use `docker-compose-example.yml` como modelo.
+
 Acessar:
 
 ```text
@@ -151,6 +153,7 @@ docker compose down
 ## Observacoes rapidas
 
 - O Swagger fica disponivel em `Development`.
+- `docker-compose-example.yml` e apenas um modelo; ajuste os placeholders antes de usar.
 - O PostgreSQL do Docker sobe em `localhost:5432`.
 - O banco do Docker usa `database=orbital_academy`, `user=orbital` e `password=orbital`.
 - Nao coloque secrets reais em `appsettings.json`.
