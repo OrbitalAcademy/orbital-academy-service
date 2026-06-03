@@ -251,6 +251,23 @@ Documentacao tecnica:
 - Controllers/actions devem declarar explicitamente `[Authorize]` ou `[AllowAnonymous]`.
 - Continuam pendentes: origem de identidade, usuarios, login, senha, refresh token, auditoria, claims e matriz de permissoes.
 
+## Decisoes de seguranca da Fase 6 JWT local
+
+A Fase 6 do checklist de C# autorizou preparar validacao JWT local com secret simetrico para desenvolvimento e evidencias.
+
+Comportamento definido:
+
+- JWT continua desabilitado por padrao em `appsettings.json`.
+- Quando `Authentication:JwtBearer:Enabled=true`, a API aceita exatamente um modo de validacao:
+  - `Authority` externo com `Audience`; ou
+  - `Issuer`, `Audience` e `Secret` local para HS256.
+- `Authority` e `Secret` juntos sao rejeitados para evitar estrategia ambigua.
+- `Secret` local exige pelo menos 32 bytes.
+- `Secret` real nao deve ser versionado; no Docker Compose local, use a variavel `ORBITAL_JWT_SECRET`.
+- O servico continua sem login, cadastro, senha, refresh token, emissao de tokens, roles finais ou policies finais.
+- O modo local existe apenas para desenvolvimento/evidencia; producao ainda depende da decisao final de identidade.
+- Quando JWT estiver desabilitado, a API registra um scheme tecnico sem autenticacao real apenas para responder `401 Unauthorized` em endpoints com `[Authorize]`, evitando erro 500 por ausencia de challenge scheme.
+
 ## Fase 7: base dos endpoints do MVP
 
 A Fase 7 criou a base HTTP dos endpoints minimos documentados para o MVP, sem implementar regras de negocio reais, persistencia, migrations, login proprio ou integracoes com ML/Python.

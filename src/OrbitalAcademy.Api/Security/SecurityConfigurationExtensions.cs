@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using OrbitalAcademy.Api.Configuration;
+using System.Text;
 
 namespace OrbitalAcademy.Api.Security;
 
@@ -42,14 +44,38 @@ public static class SecurityConfigurationExtensions
 
             authentication.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
             {
-                options.Authority = jwtBearerOptions.Authority;
                 options.Audience = jwtBearerOptions.Audience;
-                options.RequireHttpsMetadata = jwtBearerOptions.RequireHttpsMetadata;
+                options.MapInboundClaims = false;
+
+                if (!string.IsNullOrWhiteSpace(jwtBearerOptions.Secret))
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = jwtBearerOptions.Issuer,
+                        ValidateAudience = true,
+                        ValidAudience = jwtBearerOptions.Audience,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtBearerOptions.Secret)),
+                        RequireSignedTokens = true,
+                        ValidAlgorithms = [SecurityAlgorithms.HmacSha256]
+                    };
+                }
+                else
+                {
+                    options.Authority = jwtBearerOptions.Authority;
+                    options.RequireHttpsMetadata = jwtBearerOptions.RequireHttpsMetadata;
+                }
             });
         }
         else
         {
-            services.AddAuthentication();
+            services
+                .AddAuthentication(DisabledAuthenticationHandler.SchemeName)
+                .AddScheme<AuthenticationSchemeOptions, DisabledAuthenticationHandler>(
+                    DisabledAuthenticationHandler.SchemeName,
+                    options => { });
         }
 
         return services;

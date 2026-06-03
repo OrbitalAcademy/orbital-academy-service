@@ -59,13 +59,24 @@ JWT Bearer esta preparado, mas fica desabilitado por padrao:
 Authentication__JwtBearer__Enabled=false
 ```
 
-Para habilitar JWT, tambem configure:
+Para habilitar JWT com provedor externo, tambem configure:
 
 ```bash
 Authentication__JwtBearer__Authority="https://identity.local"
 Authentication__JwtBearer__Audience="orbital-academy-api"
 Authentication__JwtBearer__RequireHttpsMetadata=true
 ```
+
+Para desenvolvimento local, tambem e possivel validar JWT HS256 com secret simetrico:
+
+```bash
+Authentication__JwtBearer__Enabled=true
+Authentication__JwtBearer__Issuer="orbital-academy"
+Authentication__JwtBearer__Audience="orbital-academy-api"
+Authentication__JwtBearer__Secret="valor-local-com-pelo-menos-32-bytes"
+```
+
+Use apenas um modo por vez: `Authority` externo ou `Secret` local. Nao coloque secrets reais em `appsettings.json` ou arquivos versionados.
 
 ### CORS
 
@@ -78,6 +89,7 @@ As origens permitidas sao configuradas por ambiente. No Docker Compose e em dese
 Subir API e PostgreSQL:
 
 ```bash
+export ORBITAL_JWT_SECRET="valor-local-com-pelo-menos-32-bytes"
 docker compose up --build
 ```
 
