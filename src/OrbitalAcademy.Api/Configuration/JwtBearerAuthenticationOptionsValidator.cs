@@ -27,6 +27,11 @@ public sealed class JwtBearerAuthenticationOptionsValidator : IValidateOptions<J
 
         List<string> failures = [];
 
+        if (options.AccessTokenMinutes <= 0)
+        {
+            failures.Add("Authentication:JwtBearer:AccessTokenMinutes must be greater than zero.");
+        }
+
         bool hasAuthority = !string.IsNullOrWhiteSpace(options.Authority);
         bool hasSecret = !string.IsNullOrWhiteSpace(options.Secret);
 

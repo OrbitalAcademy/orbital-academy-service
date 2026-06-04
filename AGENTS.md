@@ -172,4 +172,16 @@ Fase 6 executada como auditoria tecnica e documental:
 - relatorio em `docs/reviews/phase-6-general-verification.md`;
 - build e testes reais ainda pendentes por ausencia do SDK `dotnet` no ambiente local usado.
 
-Ainda nao criar funcionalidades de negocio, endpoints funcionais, entidades com regras, migrations, schema final, DbContext de negocio ou autenticacao completa sem autorizacao explicita de fase futura.
+Fase de login local de Usuario executada com autorizacao explicita:
+
+- entidade `Usuario` criada com `id`, `nome`, `email`, `emailNormalizado`, `senhaHash`, `papel` e `unidade`;
+- rota publica `POST /usuario/login`;
+- DTOs `LoginRequest`, `LoginResponse` e `UsuarioAutenticadoResponse`;
+- autenticacao por `email + senha`, usando hash de senha;
+- emissao local de JWT HS256 com claims `sub`, `name`, `email`, `role`, `papel` e `unidade`;
+- `OrbitalAcademyDbContext` com `DbSet<Usuario>`;
+- migration inicial para tabela `usuarios` e indice unico em `email_normalizado`;
+- seed opcional de usuario inicial via variaveis `Authentication:InitialUser:*`, sem senha versionada;
+- testes reais de build e suite executados com SDK .NET 10 disponivel.
+
+Ainda nao criar cadastro publico, refresh token, recuperacao de senha, policies finais, matriz concreta de permissoes ou novas funcionalidades de negocio sem autorizacao explicita de fase futura.

@@ -16,5 +16,7 @@ public sealed class JwtBearerAuthenticationOptions
 
     public string? Secret { get; init; }
 
+    public int AccessTokenMinutes { get; init; } = 60;
+
     public bool RequireHttpsMetadata { get; init; } = true;
 }

@@ -17,8 +17,10 @@ Demonstrar um projeto .NET alinhado ao tema da Global Solution usando API Core, 
 - [x] Dockerfile criado.
 - [x] Docker Compose com API e PostgreSQL.
 - [x] CORS configuravel.
-- [x] JWT Bearer preparado estruturalmente.
+- [x] JWT Bearer preparado e login local de usuario implementado.
 - [x] Health check publico.
+- [x] DbContext inicial com Usuario.
+- [x] Migration inicial de Usuario.
 - [ ] Modelagem de dominio real para Catalogo.
 - [ ] Heranca e polimorfismo aplicados a Satelites, Sensores e Alertas.
 - [ ] Interfaces e injecao de dependencia com servico real.
@@ -202,7 +204,28 @@ Checklist:
 - [x] Configurar validacao `HS256`.
 - [x] Nao versionar secret real.
 - [x] Documentar variaveis de ambiente.
-- [ ] Criar ou obter token de teste para evidencia.
+- [x] Criar rota de login para obter token de teste para evidencia.
+
+## Fase 7: login local de Usuario, se aprovado
+
+Objetivo: permitir que um usuario local autenticado por `email + senha` receba JWT valido para demonstracao de IAM.
+
+Arquivos provaveis:
+
+- `src/OrbitalAcademy.Api/Controllers/UsuarioController.cs`
+- `src/OrbitalAcademy.Domain/Usuarios/Usuario.cs`
+- `src/OrbitalAcademy.Infrastructure/Persistence/OrbitalAcademyDbContext.cs`
+
+Checklist:
+
+- [x] Criar entidade `Usuario`.
+- [x] Criar DTOs de login e resposta.
+- [x] Criar endpoint `POST /usuario/login`.
+- [x] Criar servico de autenticacao com hash de senha.
+- [x] Gerar JWT local HS256 com claims de papel.
+- [x] Criar `DbContext`, `DbSet<Usuario>` e migration inicial.
+- [x] Criar seed opcional de usuario inicial por variaveis de ambiente.
+- [x] Cobrir autenticacao, JWT e mapeamento EF em testes.
 
 Exemplo conceitual de variaveis:
 

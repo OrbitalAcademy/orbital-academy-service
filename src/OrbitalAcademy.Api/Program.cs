@@ -1,4 +1,5 @@
 using Microsoft.OpenApi;
+using OrbitalAcademy.Application;
 using OrbitalAcademy.Api.Security;
 using OrbitalAcademy.Infrastructure;
 
@@ -28,8 +29,10 @@ builder.Services.AddSwaggerGen(options =>
 });
 builder.Services.AddProblemDetails();
 builder.Services.AddHealthChecks();
+builder.Services.AddApplication();
 builder.Services.AddConfiguredSecurity(builder.Configuration);
-builder.Services.AddInfrastructure();
+builder.Services.AddJwtTokenGeneration();
+builder.Services.AddInfrastructure(builder.Configuration);
 
 WebApplication app = builder.Build();
 

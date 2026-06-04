@@ -35,6 +35,7 @@ public sealed class ControllerAuthorizationConventionsTests
             .GetTypes()
             .Where(type => !type.IsAbstract && typeof(ControllerBase).IsAssignableFrom(type))
             .Where(type => type != typeof(OrbitalAcademy.Api.Controllers.HealthController))
+            .Where(type => type != typeof(OrbitalAcademy.Api.Controllers.UsuarioController))
             .Where(type => !type.GetCustomAttributes<AuthorizeAttribute>(inherit: true).Any())
             .Select(type => type.Name)
             .ToArray();
@@ -76,6 +77,7 @@ public sealed class ControllerAuthorizationConventionsTests
         Assert.Contains("POST validar", routes);
         Assert.Contains("POST otimizar", routes);
         Assert.Contains("GET indicadores", routes);
+        Assert.Contains("POST usuario/login", routes);
     }
 
     private static bool DeclaresAccessIntent(MemberInfo member)

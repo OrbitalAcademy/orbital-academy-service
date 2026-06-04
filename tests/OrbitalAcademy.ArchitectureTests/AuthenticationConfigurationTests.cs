@@ -20,6 +20,27 @@ public sealed class AuthenticationConfigurationTests
     }
 
     [Fact]
+    public void Jwt_options_require_positive_access_token_duration()
+    {
+        // Given JWT Bearer token duration is misconfigured.
+        JwtBearerAuthenticationOptions options = new()
+        {
+            Enabled = true,
+            Audience = "orbital-academy-api",
+            Issuer = "orbital-academy",
+            Secret = "dev-only-secret-with-at-least-32-bytes",
+            AccessTokenMinutes = 0
+        };
+
+        // When configuration is validated.
+        Microsoft.Extensions.Options.ValidateOptionsResult result = Validate(options, Environments.Development);
+
+        // Then startup validation rejects a token that cannot have a valid lifetime.
+        Assert.True(result.Failed);
+        Assert.Contains(result.Failures, failure => failure.Contains("AccessTokenMinutes", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public void Jwt_options_require_authority_when_enabled()
     {
         // Given JWT Bearer authentication is enabled without Authority or local Secret.

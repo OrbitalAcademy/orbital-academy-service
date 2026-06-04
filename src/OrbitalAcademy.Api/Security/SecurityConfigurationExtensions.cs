@@ -59,6 +59,8 @@ public static class SecurityConfigurationExtensions
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtBearerOptions.Secret)),
                         RequireSignedTokens = true,
+                        NameClaimType = "name",
+                        RoleClaimType = "role",
                         ValidAlgorithms = [SecurityAlgorithms.HmacSha256]
                     };
                 }
@@ -66,6 +68,11 @@ public static class SecurityConfigurationExtensions
                 {
                     options.Authority = jwtBearerOptions.Authority;
                     options.RequireHttpsMetadata = jwtBearerOptions.RequireHttpsMetadata;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        NameClaimType = "name",
+                        RoleClaimType = "role"
+                    };
                 }
             });
         }
@@ -77,6 +84,14 @@ public static class SecurityConfigurationExtensions
                     DisabledAuthenticationHandler.SchemeName,
                     options => { });
         }
+
+        return services;
+    }
+
+    public static IServiceCollection AddJwtTokenGeneration(this IServiceCollection services)
+    {
+        services.AddSingleton(TimeProvider.System);
+        services.AddScoped<IJwtTokenService, JwtTokenService>();
 
         return services;
     }

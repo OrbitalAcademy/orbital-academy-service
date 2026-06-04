@@ -11,6 +11,13 @@ services:
       Authentication__JwtBearer__Issuer: orbital-academy
       Authentication__JwtBearer__Audience: orbital-academy-api
       Authentication__JwtBearer__Secret: TODO_SECRET_COM_TAMANHO_SEGURO
+      Authentication__JwtBearer__AccessTokenMinutes: "60"
+      Authentication__InitialUser__Enabled: "false"
+      Authentication__InitialUser__Email: TODO_EMAIL_DEMO
+      Authentication__InitialUser__Nome: TODO_NOME_DEMO
+      Authentication__InitialUser__Papel: operador
+      Authentication__InitialUser__Unidade: TODO_UNIDADE_DEMO
+      Authentication__InitialUser__Password: TODO_SENHA_DEMO_NAO_VERSIONAR
       Cors__AllowedOrigins__0: http://localhost:19006
       Cors__AllowedOrigins__1: http://localhost:3000
       Cors__AllowedOrigins__2: http://localhost:5173

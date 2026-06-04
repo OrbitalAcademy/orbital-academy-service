@@ -6,7 +6,7 @@ Servico .NET do projeto Orbital Academy.
 
 Este repositorio contem a API ASP.NET Core do Orbital Academy, usada como base do servico .NET de catalogo e dos endpoints minimos do MVP.
 
-O projeto esta estruturado em camadas (`Api`, `Application`, `Domain` e `Infrastructure`) e atualmente possui endpoints HTTP estruturais, Swagger, CORS configuravel, preparacao para JWT Bearer e suporte local a PostgreSQL via Docker.
+O projeto esta estruturado em camadas (`Api`, `Application`, `Domain` e `Infrastructure`) e atualmente possui endpoints HTTP estruturais, Swagger, CORS configuravel, login local de usuario com JWT Bearer e suporte local a PostgreSQL via Docker.
 
 Regras de negocio, decisoes tecnicas internas e detalhes de arquitetura ficam em [regras.md](./regras.md).
 
@@ -18,7 +18,7 @@ Regras de negocio, decisoes tecnicas internas e detalhes de arquitetura ficam em
 - EF Core com Npgsql preparado
 - Docker e Docker Compose
 - Swagger / OpenAPI
-- JWT Bearer preparado
+- JWT Bearer com emissao local para login
 - xUnit
 
 ## Pre-requisitos
@@ -74,9 +74,27 @@ Authentication__JwtBearer__Enabled=true
 Authentication__JwtBearer__Issuer="orbital-academy"
 Authentication__JwtBearer__Audience="orbital-academy-api"
 Authentication__JwtBearer__Secret="valor-local-com-pelo-menos-32-bytes"
+Authentication__JwtBearer__AccessTokenMinutes=60
 ```
 
 Use apenas um modo por vez: `Authority` externo ou `Secret` local. Nao coloque secrets reais em `appsettings.json` ou arquivos versionados.
+
+### Usuario inicial
+
+Nao existe cadastro publico. Para criar um usuario inicial de demonstracao, habilite o seed por variaveis de ambiente:
+
+```bash
+Authentication__InitialUser__Enabled=true
+Authentication__InitialUser__Email="operador@orbital.local"
+Authentication__InitialUser__Nome="Operador Demo"
+Authentication__InitialUser__Papel="operador"
+Authentication__InitialUser__Unidade="Unidade Agro"
+Authentication__InitialUser__Password="senha-nao-versionada"
+```
+
+Papeis aceitos nesta fase: `operador`, `lider` e `admin`.
+
+O seed roda apenas quando `Authentication:InitialUser:Enabled=true`. Nessa condicao, ele aplica migrations pendentes e cria o usuario somente se o email normalizado ainda nao existir.
 
 ### CORS
 
@@ -90,6 +108,12 @@ Subir API e PostgreSQL:
 
 ```bash
 export ORBITAL_JWT_SECRET="valor-local-com-pelo-menos-32-bytes"
+export ORBITAL_INITIAL_USER_ENABLED=true
+export ORBITAL_INITIAL_USER_EMAIL="operador@orbital.local"
+export ORBITAL_INITIAL_USER_NOME="Operador Demo"
+export ORBITAL_INITIAL_USER_PAPEL="operador"
+export ORBITAL_INITIAL_USER_UNIDADE="Unidade Agro"
+export ORBITAL_INITIAL_USER_PASSWORD="senha-nao-versionada"
 docker compose up --build
 ```
 
@@ -100,6 +124,14 @@ Acessar:
 ```text
 http://localhost:5048/swagger
 http://localhost:5048/api/health
+```
+
+Login:
+
+```bash
+curl -X POST http://localhost:5048/usuario/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"operador@orbital.local","senha":"senha-nao-versionada"}'
 ```
 
 Parar:
@@ -137,15 +169,18 @@ http://localhost:5048/api/health
 
 ## Banco e migrations
 
-Ainda nao existem migrations, schema final ou `DbContext` de negocio neste repositorio.
+Existe uma migration inicial para a tabela `usuarios`, com indice unico em `email_normalizado`.
 
-Quando migrations forem criadas em fase futura, o comando esperado sera:
+Se preferir aplicar migrations manualmente, instale o `dotnet-ef` compativel com o SDK e rode:
 
 ```bash
-dotnet ef database update
+dotnet tool install --global dotnet-ef --version 10.0.4
+dotnet ef database update \
+  --project src/OrbitalAcademy.Infrastructure/OrbitalAcademy.Infrastructure.csproj \
+  --startup-project src/OrbitalAcademy.Api/OrbitalAcademy.Api.csproj
 ```
 
-TODO: documentar o comando final de migrations quando o `DbContext` for criado.
+Para o fluxo Docker de demonstracao, o seed de usuario inicial tambem aplica migrations pendentes quando estiver habilitado.
 
 ## Comandos uteis
 
@@ -169,4 +204,5 @@ docker compose down
 - O PostgreSQL do Docker sobe em `localhost:5432`.
 - O banco do Docker usa `database=orbital_academy`, `user=orbital` e `password=orbital`.
 - Nao coloque secrets reais em `appsettings.json`.
+- Nao existe cadastro, refresh token, recuperacao de senha ou policies finais nesta fase.
 - Consulte [regras.md](./regras.md) antes de implementar regras de negocio ou mudancas arquiteturais.

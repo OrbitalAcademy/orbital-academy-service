@@ -11,12 +11,12 @@ public sealed class ArchitectureConventionsTests
     [Fact]
     public void Projects_keep_the_expected_root_namespaces()
     {
-        string?[] namespaces =
+        string[] namespaces =
         [
-            typeof(ApiAssemblyReference).Namespace,
-            typeof(ApplicationAssemblyReference).Namespace,
-            typeof(DomainAssemblyReference).Namespace,
-            typeof(InfrastructureAssemblyReference).Namespace
+            typeof(ApiAssemblyReference).Namespace ?? string.Empty,
+            typeof(ApplicationAssemblyReference).Namespace ?? string.Empty,
+            typeof(DomainAssemblyReference).Namespace ?? string.Empty,
+            typeof(InfrastructureAssemblyReference).Namespace ?? string.Empty
         ];
 
         Assert.Equal(
