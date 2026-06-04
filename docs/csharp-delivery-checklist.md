@@ -26,7 +26,7 @@ Demonstrar um projeto .NET alinhado ao tema da Global Solution usando API Core, 
 - [x] Struct `PeriodoOperacional` com `DateTimeOffset` aplicada a validade de alertas.
 - [x] Logica de fluxo com metodos de dominio para validade de alerta.
 - [x] Interfaces e injecao de dependencia com servico real.
-- [ ] Tratamento de excecoes especificas.
+- [x] Tratamento de excecoes especificas.
 - [x] Structs com uso justificavel.
 - [ ] Partial classes com uso justificavel, se houver necessidade real.
 - [ ] Diagrama de fluxo.
@@ -140,11 +140,13 @@ Arquivos provaveis:
 
 Checklist:
 
-- [ ] Criar excecao especifica de dominio.
-- [ ] Lancar excecao em caso conceitualmente invalido.
-- [ ] Capturar erro especifico no controller ou em middleware.
-- [ ] Retornar resposta HTTP adequada, sem expor detalhes sensiveis.
-- [ ] Documentar no `regras.md` a decisao de tratamento de erro.
+- [x] Criar excecao especifica de dominio.
+- [x] Lancar excecao em caso conceitualmente invalido.
+- [x] Capturar erro especifico no controller ou em middleware.
+- [x] Retornar resposta HTTP adequada, sem expor detalhes sensiveis.
+- [x] Documentar no `regras.md` a decisao de tratamento de erro.
+
+Decisao da fase: foi criada a excecao de dominio `CatalogoEspacialException`. Nesta fase, o caso conceitualmente invalido demonstrado e o catalogo espacial sem satelites configurados, porque o endpoint documentado `/catalogo/satelites` existe para expor metadados minimos de satelites, sensores e alertas. O controller captura apenas essa excecao especifica, registra log controlado e retorna `503 Service Unavailable` com `ProblemDetails` generico, sem expor mensagem interna ou stack trace.
 
 Validacao esperada:
 

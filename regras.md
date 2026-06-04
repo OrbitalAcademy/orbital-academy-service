@@ -315,6 +315,25 @@ Perguntas pendentes:
 - `/otimizar` sera implementado internamente em .NET ou chamara um servico auxiliar de otimizacao?
 - Quais metricas entram em `/indicadores` na primeira versao funcional?
 
+## Fase 4 C#: tratamento de erro do catalogo
+
+A Fase 4 do checklist de C# adicionou tratamento especifico para falhas controladas do catalogo espacial, sem criar novas rotas, banco, migrations ou regras de negocio adicionais.
+
+Comportamento definido:
+
+- `CatalogoEspacialException` representa falhas especificas do dominio de catalogo espacial.
+- Nesta fase, o caso invalido demonstrado e um catalogo espacial sem satelites configurados.
+- Esse caso e tratado como indisponibilidade/inconsistencia do catalogo, nao como erro de entrada do usuario.
+- `CatalogoSatelitesController` captura apenas `CatalogoEspacialException`.
+- A API registra log de aviso e retorna `503 Service Unavailable` com `ProblemDetails` generico.
+- A resposta HTTP nao expõe mensagem interna da excecao, stack trace, configuracoes, dados sensiveis ou detalhes de implementacao.
+
+Limites:
+
+- Nao foi adicionada busca por id nem nova superficie HTTP.
+- Nao foi criada taxonomia completa de erros para todas as entidades do MVP.
+- Quando o catalogo passar a ser persistido, a estrategia de erro deve ser revisada para distinguir falha de configuracao, dado ausente, falha de banco e indisponibilidade externa.
+
 ## Resultado da Fase 6
 
 A Fase 6 revisou documentacao, estrutura, configuracoes, endpoints tecnicos, autenticacao/autorizacao preparada, CORS, secrets, migrations e testes.

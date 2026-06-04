@@ -8,13 +8,23 @@ public sealed class CatalogoSatelitesService : ICatalogoSatelitesService
 
     public IReadOnlyCollection<SateliteCatalogoItem> ListarSatelites()
     {
-        Satelite[] satelites =
+        IReadOnlyCollection<Satelite> satelites =
         [
             CriarLandsat(),
             CriarSentinel()
         ];
 
+        ExigirCatalogoComSatelites(satelites);
+
         return satelites.Select(MapearSatelite).ToArray();
+    }
+
+    private static void ExigirCatalogoComSatelites(IReadOnlyCollection<Satelite> satelites)
+    {
+        if (satelites.Count == 0)
+        {
+            throw new CatalogoEspacialException("O catalogo espacial deve conter pelo menos um satelite.");
+        }
     }
 
     private static Satelite CriarLandsat()

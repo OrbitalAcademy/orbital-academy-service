@@ -1,6 +1,12 @@
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging.Abstractions;
+using OrbitalAcademy.Api.Contracts.Catalogo;
+using OrbitalAcademy.Api.Controllers;
 using OrbitalAcademy.Application;
 using OrbitalAcademy.Application.Catalogo;
+using OrbitalAcademy.Domain.Catalogo;
 using Xunit;
 
 namespace OrbitalAcademy.ArchitectureTests;
@@ -42,5 +48,34 @@ public sealed class CatalogoSatelitesServiceTests
         ICatalogoSatelitesService service = serviceProvider.GetRequiredService<ICatalogoSatelitesService>();
 
         Assert.IsType<CatalogoSatelitesService>(service);
+    }
+
+    [Fact]
+    public void Catalogo_controller_returns_service_unavailable_without_exposing_domain_exception_details()
+    {
+        // Given the catalog service reports a controlled domain failure.
+        CatalogoSatelitesController controller = new(
+            new CatalogoSatelitesServiceComFalha(),
+            NullLogger<CatalogoSatelitesController>.Instance);
+
+        // When the HTTP endpoint handles the request.
+        ActionResult<IReadOnlyCollection<SateliteCatalogoResponse>> response = controller.Get();
+
+        // Then the API returns a safe ProblemDetails response.
+        ObjectResult result = Assert.IsType<ObjectResult>(response.Result);
+        Assert.Equal(StatusCodes.Status503ServiceUnavailable, result.StatusCode);
+
+        ProblemDetails problem = Assert.IsType<ProblemDetails>(result.Value);
+        Assert.Equal(StatusCodes.Status503ServiceUnavailable, problem.Status);
+        Assert.Equal("Catalogo espacial indisponivel", problem.Title);
+        Assert.DoesNotContain("detalhe interno", problem.Detail, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private sealed class CatalogoSatelitesServiceComFalha : ICatalogoSatelitesService
+    {
+        public IReadOnlyCollection<SateliteCatalogoItem> ListarSatelites()
+        {
+            throw new CatalogoEspacialException("detalhe interno do catalogo");
+        }
     }
 }
