@@ -10,11 +10,12 @@ A Fase 2 nao implementa regra de negocio, endpoint funcional de negocio, migrati
 
 - Solution oficial: `OrbitalAcademy.sln`.
 - Runtime alvo: .NET 10 LTS, com `TargetFramework` `net10.0`.
-- Interface HTTP: ASP.NET Core Web API com Controllers.
+- Interface HTTP principal: ASP.NET Core Web API com Controllers.
 - Banco oficial: PostgreSQL.
 - Persistencia futura: EF Core + `Npgsql.EntityFrameworkCore.PostgreSQL`.
 - Autenticacao/autorizacao: preparacao estrutural para JWT Bearer e roles/policies futuras; a origem final do token sera definida na Fase 3.
 - CORS: politica configuravel por ambiente, sem liberar origem ampla em producao.
+- Decisao posterior: a API principal do MVP foi centralizada em .NET neste repositorio. Python deixa de ser backend HTTP principal e passa a ser possivel artefato auxiliar para IA/ML, visao ou otimizacao.
 
 ## Estrutura criada
 
@@ -35,16 +36,16 @@ docs/
 ## Responsabilidades
 
 `OrbitalAcademy.Api`
-: Camada de entrada HTTP. Contem configuracao da aplicacao, Controllers, ProblemDetails, health check tecnico, preparacao para autorizacao futura e CORS por configuracao. Nao deve conter regra de dominio.
+: Camada de entrada HTTP principal. Contem configuracao da aplicacao, Controllers, ProblemDetails, health check tecnico, preparacao para autorizacao futura e CORS por configuracao. Nao deve conter regra de dominio.
 
 `OrbitalAcademy.Application`
-: Camada futura de casos de uso, validacoes de aplicacao e contratos internos. Nesta fase contem apenas marcador de assembly.
+: Camada futura de casos de uso, validacoes de aplicacao, contratos internos e orquestracao dos fluxos do MVP.
 
 `OrbitalAcademy.Domain`
-: Camada futura de dominio do catalogo de Satelites, Sensores e Alertas. Nesta fase nao contem entidades para evitar antecipar regras.
+: Camada de dominio do catalogo de Satelites, Sensores e Alertas e de futuras entidades funcionais autorizadas por fase.
 
 `OrbitalAcademy.Infrastructure`
-: Camada futura de persistencia e integracoes. Ja referencia `Npgsql.EntityFrameworkCore.PostgreSQL`, mas nao cria DbContext, migrations ou schema.
+: Camada futura de persistencia e integracoes. Ja referencia `Npgsql.EntityFrameworkCore.PostgreSQL` e deve concentrar adaptadores externos quando integracoes forem autorizadas.
 
 `OrbitalAcademy.ArchitectureTests`
 : Projeto de testes estruturais. O teste inicial valida apenas nomes de namespace esperados, sem regra de negocio.
@@ -182,11 +183,7 @@ Nao foram criados:
 - validacoes obrigatorias;
 - contratos funcionais definitivos.
 
-O servico .NET deve permanecer neutro como HTTP API configuravel por ambiente. Cenarios possiveis para consumo pela API Python, sem decisao final nesta fase:
-
-- consumo por rede interna;
-- consumo via gateway;
-- consumo direto no host do IIS.
+Com a decisao posterior de centralizacao em .NET, o catalogo passa a ser modulo interno da API principal ASP.NET Core. Python nao e consumidor obrigatorio deste catalogo; quando existir, sera apenas artefato auxiliar de IA/ML, visao ou otimizacao chamado pela API .NET.
 
 ## Riscos avaliados desde a estrutura
 
@@ -222,9 +219,9 @@ O servico .NET deve permanecer neutro como HTTP API configuravel por ambiente. C
 | Origem da autenticacao | Preparar arquitetura para JWT Bearer sem autenticar de fato nesta fase. | Decidir na Fase 3 entre autenticacao propria ou validacao de token externo. |
 | Escrita do catalogo | Nao criar endpoints, permissoes ou fluxo de escrita nesta fase. | Confirmar se escrita sera apenas administrativa ou tambem por integracoes automatizadas. |
 | Campos obrigatorios de Satelite, Sensor e Alerta | Nao criar contratos funcionais, DTOs finais, validacoes obrigatorias, entidades ou migrations nesta fase. | Definir primeiro contrato funcional na Fase 3 ou na fase especifica de catalogo. |
-| Consumo pela API Python | Manter o servico .NET neutro como HTTP API configuravel por ambiente. | Decidir entre rede interna, gateway ou consumo direto no host do IIS. |
+| Centralizacao da API | API principal consolidada em ASP.NET Core neste repositorio. | Definir apenas se IA/ML, visao ou otimizacao serao internos em .NET ou servicos auxiliares. |
 | CORS | Preparar politica por configuracao, sem `AllowAnyOrigin` em producao. | Definir origens reais para demonstracao e producao. |
 
 ## Validacao local
 
-O ambiente atual nao possui SDK `dotnet` instalado. A estrutura mira `net10.0`, mas `dotnet restore`, `dotnet build` e `dotnet test` precisam ser executados depois em um ambiente com .NET 10 SDK.
+A estrutura mira `net10.0`. Use o SDK .NET 10 localmente ou o estagio SDK do Dockerfile para executar `dotnet restore`, `dotnet build`, `dotnet test` e `dotnet publish`.

@@ -19,6 +19,20 @@ Regras de trabalho:
 - Registrar ambiguidades como perguntas pendentes.
 - Trabalhar por fases pequenas, revisaveis e seguras.
 
+## Decisao arquitetural atual
+
+O documento base descrevia a API principal em Python/FastAPI e o servico .NET como catalogo especializado. Para reduzir duplicidade operacional e aproveitar a estrutura ja criada neste repositorio, a decisao atual do projeto e centralizar a API principal do MVP em ASP.NET Core.
+
+Com esta decisao, este repositorio passa a representar o backend principal do Orbital Academy:
+
+- endpoints minimos do MVP;
+- catalogo de Satelites, Sensores e Alertas;
+- autenticacao/autorizacao tecnica;
+- persistencia em PostgreSQL;
+- integracoes futuras com IA/ML, visao e otimizacao.
+
+Python nao e mais tratado como API principal neste repositorio. Ele permanece como tecnologia possivel para notebooks, scripts ou servicos auxiliares de IA/ML, visao computacional e otimizacao, consumidos pela API .NET quando a fase funcional autorizar.
+
 ## Visao geral
 
 O Orbital Academy e uma plataforma educacional-operacional para ensinar pessoas a transformar dado espacial em decisao real. A proposta nao e criar um app de museu, quiz ou apenas um dashboard de monitoramento. O usuario deve operar uma missao: ver dado de satelite, receber previsao de risco, validar a previsao, decidir onde aplicar recurso limitado, rodar um otimizador, executar a acao e medir impacto.
@@ -50,8 +64,8 @@ Conforme o documento base, entra no prototipo minimo:
 - Notebook de IA/ML com previsao de risco em agro, metricas e interpretacao.
 - Comparacao de Regressao Logistica com Random Forest.
 - Otimizador proprio sobre instancia pequena de 10 a 20 areas e 2 a 4 recursos.
-- API REST em Python com endpoints principais e Swagger.
-- Servico .NET de Catalogo com Satelite, Sensor e Alerta, web services e banco.
+- API principal em ASP.NET Core com endpoints minimos, Swagger e camadas internas.
+- Catalogo com Satelite, Sensor e Alerta dentro do backend .NET, usando POO, web services e banco.
 - Banco com entidades essenciais e dados sinteticos.
 - Console de Missao operavel ate o fim, via build web do Expo.
 - App de campo em Expo, com 5 ou mais telas, AsyncStorage e camera funcional.
@@ -79,8 +93,8 @@ O documento explicita que nao entram no MVP:
 | Motor de Decisao, camada 2 | Otimizador proprio para alocar recursos limitados sobre a previsao. |
 | Camera de Validacao | Visao computacional com OpenCV/MediaPipe para validar ou corrigir a previsao do satelite. |
 | App de Campo | React Native com Expo, offline-first com AsyncStorage e sincronizacao ao voltar a conectividade. |
-| Servico .NET de Catalogo | API C#/.NET para Satelites, Sensores e Alertas, cobrindo C# e SOA. |
-| Backend principal | API Python/FastAPI para orquestrar Console, app, modelo, otimizador e catalogo. |
+| Backend principal .NET | API C#/.NET para orquestrar Console, app, catalogo, modelo, otimizador e endpoints minimos do MVP. |
+| Catalogo espacial | Modulo do backend .NET para Satelites, Sensores e Alertas, cobrindo C# e SOA. |
 | Banco de dados | Persistencia de areas, missoes, acoes, resultados, catalogo e snapshots. |
 | Infraestrutura e DR | Windows Server com AD/DNS/IIS e replicacao para datacenter representado como espacial. |
 | Camada de Ciberseguranca | IAM, criptografia, hardening, logs, backup e protecao da integridade da decisao. |
@@ -109,7 +123,7 @@ Entidades descritas no documento base:
 | --- | --- |
 | Usuario | id, nome, papel, unidade |
 | Area | id, lat, lng, cultura, tamanho, dono |
-| Satelite / Sensor / Alerta | Catalogo modelado no servico .NET com POO, heranca e polimorfismo |
+| Satelite / Sensor / Alerta | Catalogo modelado no backend .NET com POO, heranca e polimorfismo |
 | Observacao | id, area_id, fonte, tipo, valor, data |
 | Previsao | id, area_id, score, classe, motivo_principal, modelo_versao, data |
 | Recurso | id, tipo, capacidade, custo |
@@ -159,7 +173,7 @@ Os endpoints abaixo estao descritos como minimos no documento.
 | --- | --- | --- |
 | `/areas` | GET | Listar areas. |
 | `/risco/ranking` | GET | Listar areas priorizadas pelo modelo. |
-| `/catalogo/satelites` | GET | Expor catalogo pelo servico .NET. |
+| `/catalogo/satelites` | GET | Expor catalogo pelo backend .NET. |
 | `/missoes` | POST/GET | Criar e listar missoes. |
 | `/missoes/{id}/status` | PATCH | Atualizar estado. |
 | `/validar` | POST | Receber inferencia da camera. |
@@ -172,10 +186,10 @@ Tecnologias citadas no documento:
 
 - Dados: PostgreSQL foi confirmado como banco oficial do projeto.
 - IA/ML: Python, Jupyter, pandas, scikit-learn.
-- Otimizacao: Python, PuLP ou implementacao propria com busca local ou algoritmo genetico.
-- Visao: Python, OpenCV, MediaPipe.
-- API principal: Python, FastAPI, Pydantic, Uvicorn.
-- Servico de Catalogo: ASP.NET Core Web API com Controllers, .NET 10 LTS, EF Core e PostgreSQL via Npgsql.
+- Otimizacao: implementacao futura no backend .NET ou servico auxiliar Python, conforme fase funcional aprovada.
+- Visao: Python, OpenCV e MediaPipe podem existir como artefato auxiliar; a API principal permanece em .NET.
+- API principal: ASP.NET Core Web API com Controllers, .NET 10 LTS, EF Core e PostgreSQL via Npgsql.
+- Catalogo: modulo interno da API principal .NET.
 - Mobile/Web: React Native, Expo, AsyncStorage e TypeScript.
 - Infra/SO: Windows Server, AD, DNS, IIS e DR para datacenter espacial.
 - Seguranca: JWT/IAM, TLS, hardening GPO, logs e backup.
@@ -220,10 +234,10 @@ docs/
 
 Responsabilidades:
 
-- `OrbitalAcademy.Api`: camada HTTP com Controllers, health check tecnico, ProblemDetails, CORS por configuracao e preparacao para autenticacao/autorizacao futura.
-- `OrbitalAcademy.Application`: camada futura de casos de uso e validacoes de aplicacao.
-- `OrbitalAcademy.Domain`: camada futura de dominio do catalogo, sem entidades nesta fase.
-- `OrbitalAcademy.Infrastructure`: camada futura de persistencia e integracoes, preparada para EF Core + Npgsql.
+- `OrbitalAcademy.Api`: camada HTTP principal com Controllers, health check tecnico, ProblemDetails, CORS por configuracao e autenticacao/autorizacao.
+- `OrbitalAcademy.Application`: camada de casos de uso, validacoes de aplicacao e orquestracao dos fluxos do MVP.
+- `OrbitalAcademy.Domain`: camada de dominio, incluindo catalogo espacial e futuras entidades de negocio autorizadas por fase.
+- `OrbitalAcademy.Infrastructure`: camada de persistencia e integracoes, preparada para EF Core + Npgsql e adaptadores externos futuros.
 - `OrbitalAcademy.ArchitectureTests`: testes estruturais sem regras de negocio.
 
 Documentacao tecnica:
@@ -270,7 +284,7 @@ Comportamento definido:
 
 ## Fase 7: base dos endpoints do MVP
 
-A Fase 7 criou a base HTTP dos endpoints minimos documentados para o MVP, sem implementar regras de negocio reais, persistencia, migrations, login proprio ou integracoes com ML/Python.
+A Fase 7 criou a base HTTP dos endpoints minimos documentados para o MVP, sem implementar regras de negocio reais, persistencia, migrations ou integracoes reais com ML, camera ou otimizador.
 
 Comportamento nesta fase:
 
@@ -287,7 +301,7 @@ Limites:
 - Nao ha banco, migrations, DbContext de negocio ou schema final.
 - Nao ha login, cadastro, senha, refresh token ou emissao de tokens.
 - Nao ha regras de transicao de status de missao.
-- Nao ha integracao real com modelo de ML, camera, otimizador ou API Python.
+- Nao ha integracao real com modelo de ML, camera ou otimizador.
 - Nao ha dados sinteticos versionados para resposta funcional.
 - Health check tecnico continua anonimo por design.
 
@@ -298,7 +312,7 @@ Perguntas pendentes:
 - Quais campos sao obrigatorios para criar uma missao?
 - Quais transicoes de status de missao sao permitidas?
 - `/validar` recebe imagem, inferencia ja processada ou ambos?
-- `/otimizar` chama servico Python externo ou apenas recebe e retorna uma simulacao?
+- `/otimizar` sera implementado internamente em .NET ou chamara um servico auxiliar de otimizacao?
 - Quais metricas entram em `/indicadores` na primeira versao funcional?
 
 ## Resultado da Fase 6

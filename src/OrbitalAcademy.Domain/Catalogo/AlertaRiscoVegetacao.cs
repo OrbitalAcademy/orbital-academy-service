@@ -2,8 +2,8 @@ namespace OrbitalAcademy.Domain.Catalogo;
 
 public sealed class AlertaRiscoVegetacao : Alerta
 {
-    public AlertaRiscoVegetacao(Guid id, string nome)
-        : base(id, nome)
+    public AlertaRiscoVegetacao(Guid id, string nome, PeriodoOperacional validade)
+        : base(id, nome, validade)
     {
     }
 

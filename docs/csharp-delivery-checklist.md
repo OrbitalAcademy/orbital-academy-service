@@ -23,10 +23,12 @@ Demonstrar um projeto .NET alinhado ao tema da Global Solution usando API Core, 
 - [x] Migration inicial de Usuario.
 - [x] Modelagem de dominio real para Catalogo.
 - [x] Heranca e polimorfismo aplicados a Satelites, Sensores e Alertas.
+- [x] Struct `PeriodoOperacional` com `DateTimeOffset` aplicada a validade de alertas.
+- [x] Logica de fluxo com metodos de dominio para validade de alerta.
 - [ ] Interfaces e injecao de dependencia com servico real.
-- [ ] Logica de fluxo com metodos e DateTime.
 - [ ] Tratamento de excecoes especificas.
-- [ ] Structs ou partial classes com uso justificavel.
+- [x] Structs com uso justificavel.
+- [ ] Partial classes com uso justificavel, se houver necessidade real.
 - [ ] Diagrama de fluxo.
 - [ ] Evidencias de execucao.
 
@@ -80,11 +82,13 @@ Arquivos provaveis:
 
 Checklist:
 
-- [ ] Criar uma `struct` com uso real, por exemplo `PeriodoOperacional` ou `OrbitalCoordinate`.
-- [ ] Usar `DateTimeOffset` para historico, validade ou janela operacional.
-- [ ] Criar metodos de dominio com nomes claros.
-- [ ] Demonstrar pelo menos um metodo estatico quando fizer sentido.
-- [ ] Usar `partial` apenas se houver justificativa clara de organizacao.
+- [x] Criar uma `struct` com uso real, por exemplo `PeriodoOperacional` ou `OrbitalCoordinate`.
+- [x] Usar `DateTimeOffset` para historico, validade ou janela operacional.
+- [x] Criar metodos de dominio com nomes claros.
+- [x] Demonstrar pelo menos um metodo estatico quando fizer sentido.
+- [x] Usar `partial` apenas se houver justificativa clara de organizacao.
+
+Decisao da fase: foi criada a `struct` `PeriodoOperacional` para representar janelas temporais de dominio com `DateTimeOffset`. `Alerta` agora possui `Validade`, `DetectadoEm`, `ExpiraEm` e `EstaAtivoEm`. Nao foram usadas `partial classes`, porque nao ha necessidade real de organizacao nesta fase.
 
 Validacao esperada:
 
@@ -246,12 +250,12 @@ Authentication__JwtBearer__Secret=TODO_SECRET_COM_TAMANHO_SEGURO
 
 ### Modelagem de dominio e POO
 
-- [ ] Classes publicas.
-- [ ] Classes privadas ou membros privados.
-- [ ] Classes estaticas quando fizer sentido.
-- [ ] Heranca aplicada.
-- [ ] Polimorfismo aplicado.
-- [ ] Entidades do desafio: Satelites, Sensores e Alertas.
+- [x] Classes publicas.
+- [x] Classes privadas ou membros privados.
+- [x] Classes estaticas quando fizer sentido.
+- [x] Heranca aplicada.
+- [x] Polimorfismo aplicado.
+- [x] Entidades do desafio: Satelites, Sensores e Alertas.
 
 ### Abstracao e interfaces
 
@@ -262,10 +266,10 @@ Authentication__JwtBearer__Secret=TODO_SECRET_COM_TAMANHO_SEGURO
 
 ### Logica de fluxo, metodos e datas
 
-- [ ] Modularizacao em metodos.
-- [ ] Estruturas de controle.
-- [ ] Manipulacao precisa de `DateTimeOffset`.
-- [ ] Historico ou validade de dados.
+- [x] Modularizacao em metodos.
+- [x] Estruturas de controle.
+- [x] Manipulacao precisa de `DateTimeOffset`.
+- [x] Historico ou validade de dados.
 
 ### Tratamento de excecoes
 
@@ -276,8 +280,8 @@ Authentication__JwtBearer__Secret=TODO_SECRET_COM_TAMANHO_SEGURO
 
 ### Estruturas auxiliares
 
-- [ ] Uso adequado de `struct`.
-- [ ] Uso adequado de `partial`, se houver justificativa.
+- [x] Uso adequado de `struct`.
+- [x] Uso adequado de `partial`, se houver justificativa.
 
 ### Organizacao
 

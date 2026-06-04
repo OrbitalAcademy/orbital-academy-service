@@ -2,9 +2,9 @@
 
 ## Objetivo
 
-Criar a base HTTP dos endpoints minimos documentados para o MVP, sem implementar regras de negocio reais, persistencia, migrations, login proprio ou integracoes com ML/Python.
+Criar a base HTTP dos endpoints minimos documentados para o MVP, sem implementar regras de negocio reais, persistencia, migrations ou integracoes reais com ML, camera ou otimizador.
 
-Esta fase existe para estabilizar contratos iniciais e permitir evolucao incremental do backend.
+Esta fase existe para estabilizar contratos iniciais e permitir evolucao incremental do backend principal .NET.
 
 ## Endpoints criados
 
@@ -52,7 +52,7 @@ Esta fase nao implementa policies finais nem validacao de roles. Todos os endpoi
 - Nao ha banco, migrations, DbContext de negocio ou schema final.
 - Nao ha login, cadastro, senha, refresh token ou emissao de tokens.
 - Nao ha regras de transicao de status de missao.
-- Nao ha integracao real com modelo de ML, camera, otimizador ou API Python.
+- Nao ha integracao real com modelo de ML, camera ou otimizador.
 - Nao ha dados sinteticos versionados para resposta funcional.
 - Health check tecnico continua anonimo por design.
 
@@ -63,5 +63,5 @@ Esta fase nao implementa policies finais nem validacao de roles. Todos os endpoi
 - Quais campos sao obrigatorios para criar uma missao?
 - Quais transicoes de status de missao sao permitidas?
 - `/validar` recebe imagem, inferencia ja processada ou ambos?
-- `/otimizar` chama servico Python externo ou apenas recebe e retorna uma simulacao?
+- `/otimizar` sera implementado internamente em .NET ou chamara um servico auxiliar de otimizacao?
 - Quais metricas entram em `/indicadores` na primeira versao funcional?

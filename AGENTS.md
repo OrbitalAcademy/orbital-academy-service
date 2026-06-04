@@ -134,6 +134,14 @@ Pare e pergunte quando:
 
 ## Estado atual do projeto
 
+Decisao arquitetural atual:
+
+- este repositorio agora centraliza a API principal do MVP em ASP.NET Core;
+- o catalogo espacial passa a ser modulo interno do backend .NET;
+- Python deixa de ser API principal neste repositorio;
+- artefatos Python podem existir apenas como notebooks, scripts ou servicos auxiliares de IA/ML, visao computacional ou otimizacao, quando uma fase funcional autorizar;
+- nao duplicar endpoints principais em outro backend sem nova decisao arquitetural explicita.
+
 Fase 1 concluida com documentacao inicial:
 
 - `README.md`;

@@ -1,12 +1,14 @@
 # Orbital Academy Service
 
-Servico .NET do projeto Orbital Academy.
+Backend principal .NET do projeto Orbital Academy.
 
 ## Sobre o projeto
 
-Este repositorio contem a API ASP.NET Core do Orbital Academy, usada como base do servico .NET de catalogo e dos endpoints minimos do MVP.
+Este repositorio contem a API principal ASP.NET Core do Orbital Academy. A decisao arquitetural atual centraliza neste backend .NET os endpoints minimos do MVP, o catalogo espacial, autenticacao local para demonstracao, persistencia e integracoes futuras.
 
 O projeto esta estruturado em camadas (`Api`, `Application`, `Domain` e `Infrastructure`) e atualmente possui endpoints HTTP estruturais, Swagger, CORS configuravel, login local de usuario com JWT Bearer e suporte local a PostgreSQL via Docker.
+
+Python deixa de ser a API principal neste repositorio. Quando necessario, artefatos Python podem continuar existindo como notebooks, scripts ou servicos auxiliares de IA/ML, visao computacional e otimizacao, chamados futuramente pela API .NET sem duplicar o backend HTTP principal.
 
 Regras de negocio, decisoes tecnicas internas e detalhes de arquitetura ficam em [regras.md](./regras.md).
 
