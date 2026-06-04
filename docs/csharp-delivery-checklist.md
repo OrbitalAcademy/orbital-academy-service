@@ -21,8 +21,8 @@ Demonstrar um projeto .NET alinhado ao tema da Global Solution usando API Core, 
 - [x] Health check publico.
 - [x] DbContext inicial com Usuario.
 - [x] Migration inicial de Usuario.
-- [ ] Modelagem de dominio real para Catalogo.
-- [ ] Heranca e polimorfismo aplicados a Satelites, Sensores e Alertas.
+- [x] Modelagem de dominio real para Catalogo.
+- [x] Heranca e polimorfismo aplicados a Satelites, Sensores e Alertas.
 - [ ] Interfaces e injecao de dependencia com servico real.
 - [ ] Logica de fluxo com metodos e DateTime.
 - [ ] Tratamento de excecoes especificas.
@@ -45,15 +45,15 @@ Arquivos provaveis:
 
 Checklist:
 
-- [ ] Criar classe publica `Satelite`.
-- [ ] Criar classe abstrata `Sensor`.
-- [ ] Criar pelo menos duas classes concretas de sensor.
-- [ ] Criar classe abstrata `Alerta`.
-- [ ] Criar pelo menos uma classe concreta de alerta.
-- [ ] Demonstrar heranca.
-- [ ] Demonstrar polimorfismo com metodos sobrescritos.
-- [ ] Usar encapsulamento com propriedades privadas ou colecoes protegidas contra alteracao direta.
-- [ ] Evitar regras nao documentadas ou registrar TODO quando houver duvida.
+- [x] Criar classe publica `Satelite`.
+- [x] Criar classe abstrata `Sensor`.
+- [x] Criar pelo menos duas classes concretas de sensor.
+- [x] Criar classe abstrata `Alerta`.
+- [x] Criar pelo menos uma classe concreta de alerta.
+- [x] Demonstrar heranca.
+- [x] Demonstrar polimorfismo com metodos sobrescritos.
+- [x] Usar encapsulamento com propriedades privadas ou colecoes protegidas contra alteracao direta.
+- [x] Evitar regras nao documentadas ou registrar TODO quando houver duvida.
 
 Validacao esperada:
 
