@@ -1,134 +1,172 @@
 # Orbital Academy Service
 
-Backend principal .NET do projeto Orbital Academy.
+Backend principal do Orbital Academy, construido em ASP.NET Core para centralizar a API do MVP, a autenticacao local de demonstracao, a persistencia inicial em PostgreSQL e o catalogo espacial de satelites, sensores e alertas.
 
-## Sobre o projeto
+## Visao geral
 
-Este repositorio contem a API principal ASP.NET Core do Orbital Academy. A decisao arquitetural atual centraliza neste backend .NET os endpoints minimos do MVP, o catalogo espacial, autenticacao local para demonstracao, persistencia e integracoes futuras.
+O Orbital Academy e uma plataforma educacional-operacional voltada a transformar dados espaciais em decisao real. A proposta do produto e permitir que uma pessoa opere uma missao: observar dados de satelite, acompanhar uma previsao de risco, validar informacoes em campo, decidir onde aplicar recursos limitados e medir impacto.
 
-O projeto esta estruturado em camadas (`Api`, `Application`, `Domain` e `Infrastructure`) e atualmente possui endpoints HTTP estruturais, Swagger, CORS configuravel, login local de usuario com JWT Bearer e suporte local a PostgreSQL via Docker.
+Neste repositorio, a API .NET representa o backend principal do MVP. O foco funcional atual esta na missao agro, especialmente risco em lavoura, preservando as demais missoes como evolucao futura. O catalogo espacial, antes previsto como servico separado, esta organizado como modulo interno do backend .NET para reduzir duplicidade e manter a entrega demonstravel.
 
-Python deixa de ser a API principal neste repositorio. Quando necessario, artefatos Python podem continuar existindo como notebooks, scripts ou servicos auxiliares de IA/ML, visao computacional e otimizacao, chamados futuramente pela API .NET sem duplicar o backend HTTP principal.
+## Objetivo da aplicacao
 
-Regras de negocio, decisoes tecnicas internas e detalhes de arquitetura ficam em [regras.md](./regras.md).
+A aplicacao fornece a base HTTP para os fluxos principais do Orbital Academy:
+
+- expor endpoints minimos do Console de Missao;
+- autenticar um usuario local de demonstracao por email e senha;
+- emitir JWT local para consumo dos endpoints protegidos;
+- disponibilizar o catalogo demonstravel de satelites, sensores e alertas;
+- preparar contratos para areas, ranking de risco, missoes, validacao por camera, otimizacao e indicadores;
+- manter uma estrutura limpa para evolucao com regras de negocio, persistencia e integracoes externas.
+
+Os endpoints de negocio ainda nao implementam o fluxo completo de decisao, ML, camera ou otimizacao. Eles existem como contratos iniciais seguros e documentados para evolucao incremental.
 
 ## Tecnologias utilizadas
 
 - .NET 10
 - ASP.NET Core Web API com Controllers
+- Swagger / OpenAPI com Swashbuckle
 - PostgreSQL
-- EF Core com Npgsql preparado
+- Entity Framework Core com Npgsql
+- JWT Bearer, com suporte a HS256 local para demonstracao
+- ASP.NET Core Identity PasswordHasher para hash de senha
 - Docker e Docker Compose
-- Swagger / OpenAPI
-- JWT Bearer com emissao local para login
-- xUnit
+- xUnit v3
+- Central Package Management via `Directory.Packages.props`
 
 ## Pre-requisitos
 
-Para rodar localmente com Docker:
+Para executar com Docker:
 
 - Docker
 - Docker Compose
 
-Para rodar localmente sem Docker:
+Para executar sem Docker:
 
 - .NET 10 SDK
-- PostgreSQL local, se for usar banco fora do Docker
+- PostgreSQL acessivel localmente ou em outro host
+- Connection string configurada em `ConnectionStrings:OrbitalAcademy`
 
-## Configuracao
+## Configuracao inicial
 
-### Banco de dados
+A API precisa de uma connection string PostgreSQL para iniciar porque o `OrbitalAcademyDbContext` e registrado no startup.
 
-A connection string principal usa a chave:
-
-```text
-ConnectionStrings:OrbitalAcademy
-```
-
-Como variavel de ambiente, use `__` no lugar de `:`:
+Exemplo de connection string por variavel de ambiente:
 
 ```bash
-ConnectionStrings__OrbitalAcademy="Host=localhost;Port=5432;Database=orbital_academy;Username=orbital;Password=orbital"
+export ConnectionStrings__OrbitalAcademy="Host=localhost;Port=5432;Database=orbital_academy;Username=orbital;Password=orbital"
 ```
 
-No Docker Compose, essa configuracao ja esta definida para apontar para o servico `postgres`.
-
-### Autenticacao
-
-JWT Bearer esta preparado, mas fica desabilitado por padrao:
+Para autenticar usuarios locais e emitir JWT de demonstracao, configure o JWT local com issuer, audience e secret de pelo menos 32 bytes:
 
 ```bash
-Authentication__JwtBearer__Enabled=false
+export Authentication__JwtBearer__Enabled=true
+export Authentication__JwtBearer__Issuer="orbital-academy"
+export Authentication__JwtBearer__Audience="orbital-academy-api"
+export Authentication__JwtBearer__Secret="dev-only-secret-with-at-least-32-bytes"
+export Authentication__JwtBearer__AccessTokenMinutes=60
 ```
 
-Para habilitar JWT com provedor externo, tambem configure:
+Nao registre secrets reais, tokens, senhas ou credenciais sensiveis em arquivos versionados.
+
+## Usuario e dados de teste
+
+Nao ha credenciais fixas versionadas no projeto. O usuario inicial de demonstracao e criado opcionalmente por variaveis de ambiente:
 
 ```bash
-Authentication__JwtBearer__Authority="https://identity.local"
-Authentication__JwtBearer__Audience="orbital-academy-api"
-Authentication__JwtBearer__RequireHttpsMetadata=true
+export Authentication__InitialUser__Enabled=true
+export Authentication__InitialUser__Email="operador@orbital.local"
+export Authentication__InitialUser__Nome="Operador Demo"
+export Authentication__InitialUser__Papel="operador"
+export Authentication__InitialUser__Unidade="Unidade Agro"
+export Authentication__InitialUser__Password="senha-nao-versionada"
 ```
 
-Para desenvolvimento local, tambem e possivel validar JWT HS256 com secret simetrico:
+Quando o seed esta habilitado, a aplicacao aplica migrations pendentes e cria o usuario somente se o email normalizado ainda nao existir. Os papeis aceitos no estado atual sao `operador`, `lider` e `admin`.
+
+O catalogo espacial possui dados demonstraveis em memoria para `Landsat` e `Sentinel`, cada um com sensores e alertas associados. Os demais endpoints de negocio retornam listas vazias ou aceite estrutural enquanto as regras finais e integracoes reais nao forem implementadas.
+
+## Como rodar com Docker
+
+O Docker Compose local sobe a API e o PostgreSQL. Configure as variaveis de seguranca e, se quiser testar login, habilite o usuario inicial:
 
 ```bash
-Authentication__JwtBearer__Enabled=true
-Authentication__JwtBearer__Issuer="orbital-academy"
-Authentication__JwtBearer__Audience="orbital-academy-api"
-Authentication__JwtBearer__Secret="valor-local-com-pelo-menos-32-bytes"
-Authentication__JwtBearer__AccessTokenMinutes=60
-```
-
-Use apenas um modo por vez: `Authority` externo ou `Secret` local. Nao coloque secrets reais em `appsettings.json` ou arquivos versionados.
-
-### Usuario inicial
-
-Nao existe cadastro publico. Para criar um usuario inicial de demonstracao, habilite o seed por variaveis de ambiente:
-
-```bash
-Authentication__InitialUser__Enabled=true
-Authentication__InitialUser__Email="operador@orbital.local"
-Authentication__InitialUser__Nome="Operador Demo"
-Authentication__InitialUser__Papel="operador"
-Authentication__InitialUser__Unidade="Unidade Agro"
-Authentication__InitialUser__Password="senha-nao-versionada"
-```
-
-Papeis aceitos nesta fase: `operador`, `lider` e `admin`.
-
-O seed roda apenas quando `Authentication:InitialUser:Enabled=true`. Nessa condicao, ele aplica migrations pendentes e cria o usuario somente se o email normalizado ainda nao existir.
-
-### CORS
-
-As origens permitidas sao configuradas por ambiente. No Docker Compose e em desenvolvimento, as origens localhost principais ja estao configuradas.
-
-## Como rodar o projeto
-
-### Com Docker
-
-Subir API e PostgreSQL:
-
-```bash
-export ORBITAL_JWT_SECRET="valor-local-com-pelo-menos-32-bytes"
+export ORBITAL_JWT_SECRET="dev-only-secret-with-at-least-32-bytes"
 export ORBITAL_INITIAL_USER_ENABLED=true
 export ORBITAL_INITIAL_USER_EMAIL="operador@orbital.local"
 export ORBITAL_INITIAL_USER_NOME="Operador Demo"
 export ORBITAL_INITIAL_USER_PAPEL="operador"
 export ORBITAL_INITIAL_USER_UNIDADE="Unidade Agro"
 export ORBITAL_INITIAL_USER_PASSWORD="senha-nao-versionada"
+
 docker compose up --build
 ```
 
-Se precisar recriar a configuracao local, use `docker-compose-example.yml` como modelo.
+Servicos expostos localmente:
 
-Acessar:
+```text
+API:        http://localhost:5048
+Swagger:    http://localhost:5048/swagger
+Health:     http://localhost:5048/api/health
+PostgreSQL: localhost:5432
+```
+
+Para encerrar:
+
+```bash
+docker compose down
+```
+
+`docker-compose-example.yml` serve como modelo seguro para recriar uma configuracao local quando necessario.
+
+## Como rodar sem Docker
+
+Com PostgreSQL disponivel e variaveis configuradas:
+
+```bash
+dotnet restore OrbitalAcademy.sln
+dotnet build OrbitalAcademy.sln
+dotnet run --project src/OrbitalAcademy.Api/OrbitalAcademy.Api.csproj --launch-profile http
+```
+
+O perfil `http` usa:
+
+```text
+http://localhost:5048
+```
+
+O perfil `https` tambem esta disponivel em `launchSettings.json`. Para usa-lo, gere e confie no certificado de desenvolvimento conforme o sistema operacional:
+
+```bash
+dotnet dev-certs https
+dotnet dev-certs https --trust
+```
+
+## Swagger
+
+Em ambiente `Development`, a documentacao interativa fica disponivel em:
 
 ```text
 http://localhost:5048/swagger
-http://localhost:5048/api/health
 ```
 
-Login:
+O documento OpenAPI pode ser acessado em:
+
+```text
+http://localhost:5048/swagger/v1/swagger.json
+```
+
+Depois de iniciar a aplicacao, acesse o Swagger e use o endpoint de login para obter um token. Em seguida, informe o token no botao de autorizacao do Swagger no formato `Bearer <token>`.
+
+## Como testar os endpoints
+
+Health check publico:
+
+```bash
+curl http://localhost:5048/api/health
+```
+
+Login com usuario inicial configurado:
 
 ```bash
 curl -X POST http://localhost:5048/usuario/login \
@@ -136,44 +174,152 @@ curl -X POST http://localhost:5048/usuario/login \
   -d '{"email":"operador@orbital.local","senha":"senha-nao-versionada"}'
 ```
 
-Parar:
+A resposta contem `token`, `tokenType`, `expiresAt` e os dados basicos do usuario autenticado. Use o token nos endpoints protegidos:
 
 ```bash
-docker compose down
+curl http://localhost:5048/catalogo/satelites \
+  -H "Authorization: Bearer <token>"
 ```
 
-### Sem Docker
+## Principais endpoints
 
-Restaurar dependencias:
+### Saude da API
+
+| Metodo | Rota | Acesso | Objetivo |
+| --- | --- | --- | --- |
+| GET | `/api/health` | Publico | Verificar se a API esta respondendo. |
+| GET | `/health` | Publico | Health check tecnico mapeado pelo ASP.NET Core. |
+
+Exemplo:
 
 ```bash
-dotnet restore OrbitalAcademy.sln
+curl http://localhost:5048/api/health
 ```
 
-Compilar:
+### Autenticacao
+
+| Metodo | Rota | Acesso | Objetivo |
+| --- | --- | --- | --- |
+| POST | `/usuario/login` | Publico | Autenticar usuario local por email e senha e emitir JWT HS256. |
+
+Exemplo:
+
+```json
+{
+  "email": "operador@orbital.local",
+  "senha": "senha-nao-versionada"
+}
+```
+
+Nao existe cadastro publico, recuperacao de senha, refresh token ou matriz final de permissoes neste estado do projeto.
+
+### Catalogo espacial
+
+| Metodo | Rota | Acesso | Objetivo |
+| --- | --- | --- | --- |
+| GET | `/catalogo/satelites` | Protegido | Listar satelites demonstraveis com sensores e alertas. |
+
+Exemplo:
 
 ```bash
-dotnet build OrbitalAcademy.sln
+curl http://localhost:5048/catalogo/satelites \
+  -H "Authorization: Bearer <token>"
 ```
 
-Rodar a API:
+O endpoint retorna itens com `id`, `nome`, `sensores` e `alertas`. O catalogo atual e mantido em memoria pela camada de aplicacao.
+
+### Areas e ranking de risco
+
+| Metodo | Rota | Acesso | Objetivo |
+| --- | --- | --- | --- |
+| GET | `/areas` | Protegido | Listar areas monitoradas. |
+| GET | `/risco/ranking` | Protegido | Listar areas priorizadas pelo score de risco. |
+
+Esses endpoints estao preparados como contratos do MVP e atualmente retornam listas vazias.
+
+Exemplo:
 
 ```bash
-dotnet run --project src/OrbitalAcademy.Api/OrbitalAcademy.Api.csproj --launch-profile http
+curl http://localhost:5048/risco/ranking \
+  -H "Authorization: Bearer <token>"
 ```
 
-Acessar:
+### Missoes
 
-```text
-http://localhost:5048/swagger
-http://localhost:5048/api/health
+| Metodo | Rota | Acesso | Objetivo |
+| --- | --- | --- | --- |
+| GET | `/missoes` | Protegido | Listar missoes. |
+| POST | `/missoes` | Protegido | Receber contrato de criacao de missao. |
+| PATCH | `/missoes/{id}/status` | Protegido | Receber contrato de atualizacao de status. |
+
+Exemplo de criacao:
+
+```json
+{
+  "areaId": "11111111-1111-1111-1111-111111111111",
+  "prioridade": "alta",
+  "responsavelId": "22222222-2222-2222-2222-222222222222",
+  "prazo": "2026-06-09T18:00:00Z"
+}
 ```
 
-## Banco e migrations
+Exemplo de atualizacao de status:
 
-Existe uma migration inicial para a tabela `usuarios`, com indice unico em `email_normalizado`.
+```json
+{
+  "status": "Validada"
+}
+```
 
-Se preferir aplicar migrations manualmente, instale o `dotnet-ef` compativel com o SDK e rode:
+As transicoes finais de status ainda nao estao implementadas no backend.
+
+### Validacao e otimizacao
+
+| Metodo | Rota | Acesso | Objetivo |
+| --- | --- | --- | --- |
+| POST | `/validar` | Protegido | Receber contrato de validacao vinda de camera ou outra fonte. |
+| POST | `/otimizar` | Protegido | Receber contrato para futura integracao com motor de otimizacao. |
+
+Exemplo de validacao:
+
+```json
+{
+  "areaId": "11111111-1111-1111-1111-111111111111",
+  "fonte": "camera",
+  "tipo": "estado-cultura",
+  "valor": "estresse-hidrico",
+  "data": "2026-06-04T12:00:00Z"
+}
+```
+
+Exemplo de otimizacao:
+
+```json
+{
+  "areaIds": [
+    "11111111-1111-1111-1111-111111111111"
+  ],
+  "recursoIds": [
+    "33333333-3333-3333-3333-333333333333"
+  ]
+}
+```
+
+Os dois endpoints retornam `202 Accepted` com mensagem de aceite estrutural.
+
+### Indicadores
+
+| Metodo | Rota | Acesso | Objetivo |
+| --- | --- | --- | --- |
+| GET | `/indicadores` | Protegido | Expor metricas agregadas da operacao. |
+
+No estado atual, as metricas retornam valores zerados ate que os fluxos de missao, resultado e impacto sejam persistidos.
+
+## Banco de dados e migrations
+
+A persistencia atual contempla a entidade `Usuario`, mapeada para a tabela `usuarios`, com indice unico em `email_normalizado` e senha armazenada apenas como hash.
+
+Para aplicar migrations manualmente:
 
 ```bash
 dotnet tool install --global dotnet-ef --version 10.0.4
@@ -182,29 +328,25 @@ dotnet ef database update \
   --startup-project src/OrbitalAcademy.Api/OrbitalAcademy.Api.csproj
 ```
 
-Para o fluxo Docker de demonstracao, o seed de usuario inicial tambem aplica migrations pendentes quando estiver habilitado.
+Quando o seed do usuario inicial esta habilitado, a aplicacao tambem aplica migrations pendentes antes de criar o usuario.
 
-## Comandos uteis
+## Testes
+
+Execute a suite com:
 
 ```bash
-dotnet restore OrbitalAcademy.sln
-dotnet build OrbitalAcademy.sln
 dotnet test OrbitalAcademy.sln
-dotnet run --project src/OrbitalAcademy.Api/OrbitalAcademy.Api.csproj --launch-profile http
-docker compose up --build
-docker compose up -d --build
-docker compose ps
-docker compose logs --tail=200 api
-docker compose logs --tail=200 postgres
-docker compose down
 ```
 
-## Observacoes rapidas
+A suite cobre convencoes de arquitetura, configuracao de autenticacao, CORS, autorizacao explicita em controllers, dominio do catalogo, servico do catalogo, validacao de login, geracao de JWT, seed/configuracao de usuario inicial e mapeamento de persistencia de `Usuario`.
 
-- O Swagger fica disponivel em `Development`.
-- `docker-compose-example.yml` e apenas um modelo; ajuste os placeholders antes de usar.
-- O PostgreSQL do Docker sobe em `localhost:5432`.
-- O banco do Docker usa `database=orbital_academy`, `user=orbital` e `password=orbital`.
-- Nao coloque secrets reais em `appsettings.json`.
-- Nao existe cadastro, refresh token, recuperacao de senha ou policies finais nesta fase.
-- Consulte [regras.md](./regras.md) antes de implementar regras de negocio ou mudancas arquiteturais.
+## Orientacoes para desenvolvimento e manutencao
+
+- Use o documento base `Orbital-Academy-documentacao-base-v1.1.docx` como fonte de verdade para regras de negocio, escopo e decisoes funcionais.
+- Preserve a API .NET como backend principal deste repositorio.
+- Mantenha separacao entre `Api`, `Application`, `Domain` e `Infrastructure`.
+- Nao implemente cadastro publico, refresh token, policies finais ou novas funcionalidades de negocio sem confirmacao do escopo.
+- Configure CORS por origens explicitas; nao use wildcard.
+- Nao versione secrets, tokens, senhas ou connection strings reais.
+- Ao alterar endpoints protegidos, mantenha a intencao de acesso explicita com `[Authorize]` ou `[AllowAnonymous]`.
+- Inclua testes proporcionais ao risco da alteracao, especialmente para seguranca, validacao, contratos HTTP e persistencia.
