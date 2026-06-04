@@ -25,7 +25,7 @@ Demonstrar um projeto .NET alinhado ao tema da Global Solution usando API Core, 
 - [x] Heranca e polimorfismo aplicados a Satelites, Sensores e Alertas.
 - [x] Struct `PeriodoOperacional` com `DateTimeOffset` aplicada a validade de alertas.
 - [x] Logica de fluxo com metodos de dominio para validade de alerta.
-- [ ] Interfaces e injecao de dependencia com servico real.
+- [x] Interfaces e injecao de dependencia com servico real.
 - [ ] Tratamento de excecoes especificas.
 - [x] Structs com uso justificavel.
 - [ ] Partial classes com uso justificavel, se houver necessidade real.
@@ -110,12 +110,14 @@ Arquivos provaveis:
 
 Checklist:
 
-- [ ] Criar interface `ICatalogoSatelitesService`.
-- [ ] Criar implementacao `CatalogoSatelitesService`.
-- [ ] Registrar servico com injecao de dependencia.
-- [ ] Atualizar `CatalogoSatelitesController` para usar o servico.
-- [ ] Retornar dados demonstraveis em memoria.
-- [ ] Manter banco e migrations fora desta fase, salvo autorizacao explicita.
+- [x] Criar interface `ICatalogoSatelitesService`.
+- [x] Criar implementacao `CatalogoSatelitesService`.
+- [x] Registrar servico com injecao de dependencia.
+- [x] Atualizar `CatalogoSatelitesController` para usar o servico.
+- [x] Retornar dados demonstraveis em memoria.
+- [x] Manter banco e migrations fora desta fase, salvo autorizacao explicita.
+
+Decisao da fase: foi criado um servico de aplicacao em memoria para o catalogo de satelites, registrado por interface no container de DI. O controller agora depende de `ICatalogoSatelitesService` e apenas mapeia os dados para os contratos HTTP. Nao houve alteracao em banco, migrations ou persistencia do catalogo.
 
 Validacao esperada:
 

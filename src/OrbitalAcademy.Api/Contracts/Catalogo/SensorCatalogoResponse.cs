@@ -2,4 +2,6 @@ namespace OrbitalAcademy.Api.Contracts.Catalogo;
 
 public sealed record SensorCatalogoResponse(
     Guid Id,
-    string Nome);
+    string Nome,
+    string Tipo,
+    string DescricaoLeitura);

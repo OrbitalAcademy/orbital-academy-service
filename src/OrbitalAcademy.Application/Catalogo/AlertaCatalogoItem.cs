@@ -1,6 +1,6 @@
-namespace OrbitalAcademy.Api.Contracts.Catalogo;
+namespace OrbitalAcademy.Application.Catalogo;
 
-public sealed record AlertaCatalogoResponse(
+public sealed record AlertaCatalogoItem(
     Guid Id,
     string Nome,
     string Tipo,
