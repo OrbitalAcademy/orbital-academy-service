@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using OrbitalAcademy.Domain.Usuarios;
+using OrbitalAcademy.Infrastructure.Migrations;
 using OrbitalAcademy.Infrastructure.Persistence;
 using Xunit;
 
@@ -47,5 +50,23 @@ public sealed class UsuarioPersistenceMappingTests
         Assert.Contains(entity.GetIndexes(), index =>
             index.IsUnique &&
             index.Properties.Single().Name == nameof(Usuario.EmailNormalizado));
+    }
+
+    [Fact]
+    public void Infrastructure_assembly_exposes_initial_usuario_migration()
+    {
+        // Given the EF context configured with the PostgreSQL provider.
+        DbContextOptions<OrbitalAcademyDbContext> options = new DbContextOptionsBuilder<OrbitalAcademyDbContext>()
+            .UseNpgsql("Host=localhost;Database=orbital_academy;Username=orbital;Password=orbital")
+            .Options;
+
+        using OrbitalAcademyDbContext dbContext = new(options);
+
+        // When EF inspects migrations available in the infrastructure assembly.
+        IMigrationsAssembly migrationsAssembly = dbContext.GetService<IMigrationsAssembly>();
+
+        // Then the initial migration used by the Docker seed is discoverable at runtime.
+        Assert.Contains("20260602000000_CreateUsuarios", migrationsAssembly.Migrations.Keys);
+        Assert.Contains(migrationsAssembly.Migrations.Values, migration => migration == typeof(CreateUsuarios));
     }
 }

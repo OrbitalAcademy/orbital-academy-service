@@ -52,4 +52,39 @@ public sealed class CatalogoDomainTests
         Assert.Equal(detectadoEm, alerta.DetectadoEm);
         Assert.Equal(detectadoEm.AddHours(12), alerta.ExpiraEm);
     }
+
+    [Fact]
+    public void Satelite_exposes_sensors_and_alerts_as_read_only_collections()
+    {
+        // Given a satellite with one sensor and one alert.
+        Satelite satelite = new(
+            Guid.Parse("fe1d9f7c-4d77-493d-8f6e-d715f4e7a3a7"),
+            "Sentinel");
+        SensorOptico sensor = new(
+            Guid.Parse("5f2727ab-e093-4058-b82c-b2bb4e4d3276"),
+            "Sensor optico");
+        AlertaRiscoVegetacao alerta = new(
+            Guid.Parse("bddc8790-0381-47a9-a5e1-a5d598ed4084"),
+            "Risco em lavoura",
+            PeriodoOperacional.CriarComDuracao(
+                new DateTimeOffset(2026, 6, 4, 10, 0, 0, TimeSpan.Zero),
+                TimeSpan.FromHours(6)));
+
+        satelite.AdicionarSensor(sensor);
+        satelite.AdicionarAlerta(alerta);
+
+        // When reading the exposed collections as generic collections.
+        ICollection<Sensor> sensores = Assert.IsAssignableFrom<ICollection<Sensor>>(satelite.Sensores);
+        ICollection<Alerta> alertas = Assert.IsAssignableFrom<ICollection<Alerta>>(satelite.Alertas);
+
+        // Then external callers cannot mutate the satellite catalog directly.
+        Assert.True(sensores.IsReadOnly);
+        Assert.True(alertas.IsReadOnly);
+        Assert.Throws<NotSupportedException>(() => sensores.Add(new SensorRadar(
+            Guid.Parse("ace7f988-4cff-4e9a-a1f2-67826c465bd1"),
+            "Sensor radar")));
+        Assert.Throws<NotSupportedException>(() => alertas.Clear());
+        Assert.Single(satelite.Sensores);
+        Assert.Single(satelite.Alertas);
+    }
 }

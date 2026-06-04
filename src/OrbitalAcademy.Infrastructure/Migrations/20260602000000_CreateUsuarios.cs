@@ -1,10 +1,14 @@
 using System;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
+using OrbitalAcademy.Infrastructure.Persistence;
 
 #nullable disable
 
 namespace OrbitalAcademy.Infrastructure.Migrations;
 
+[DbContext(typeof(OrbitalAcademyDbContext))]
+[Migration("20260602000000_CreateUsuarios")]
 public partial class CreateUsuarios : Migration
 {
     protected override void Up(MigrationBuilder migrationBuilder)

@@ -29,8 +29,8 @@ Demonstrar um projeto .NET alinhado ao tema da Global Solution usando API Core, 
 - [x] Tratamento de excecoes especificas.
 - [x] Structs com uso justificavel.
 - [ ] Partial classes com uso justificavel, se houver necessidade real.
-- [ ] Diagrama de fluxo.
-- [ ] Evidencias de execucao.
+- [x] Diagrama de fluxo.
+- [x] Evidencias de execucao.
 
 ## Fase 1: dominio POO do catalogo
 
@@ -166,13 +166,15 @@ Arquivos provaveis:
 
 Checklist:
 
-- [ ] Adicionar testes simples para dominio ou servico.
-- [ ] Rodar build.
-- [ ] Rodar testes.
-- [ ] Rodar Docker Compose.
-- [ ] Registrar evidencias de execucao.
-- [ ] Criar diagrama de fluxo simples.
-- [ ] Registrar prints ou logs relevantes.
+- [x] Adicionar testes simples para dominio ou servico.
+- [x] Rodar build.
+- [x] Rodar testes.
+- [x] Rodar Docker Compose.
+- [x] Registrar evidencias de execucao.
+- [x] Criar diagrama de fluxo simples.
+- [x] Registrar prints ou logs relevantes.
+
+Decisao da fase: foram adicionados testes para encapsulamento do dominio de catalogo, discovery da migration inicial de usuarios e metadata de validacao do `LoginRequest` no padrao esperado pelo MVC em .NET 10. A validacao final executou restore, build, testes, Docker Compose, health check, catalogo protegido por JWT, login local e varredura dos endpoints minimos da API. Evidencias registradas em `docs/evidencias/csharp-delivery.md` e diagrama em `docs/diagrams/csharp-catalog-flow.md`.
 
 Comandos de evidencia:
 
