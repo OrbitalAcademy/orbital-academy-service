@@ -18,12 +18,24 @@ services:
       Authentication__InitialUser__Papel: operador
       Authentication__InitialUser__Unidade: TODO_UNIDADE_DEMO
       Authentication__InitialUser__Password: TODO_SENHA_DEMO_NAO_VERSIONAR
+      PGHOST: postgres
+      PGPORT: "5432"
+      PGDATABASE: orbital_academy
+      PGUSER: TODO_DB_USER
+      PGPASSWORD: TODO_DB_PASSWORD
+      Security__Backup__ScriptPath: scripts/backup-db.sh
+      Security__Backup__BackupDirectory: /backups
+      Security__Backup__LogFilePath: /backups/logs/backup.log
+      Security__Backup__MaxLogLines: "100"
+      Security__Backup__TimeoutSeconds: "120"
       Cors__AllowedOrigins__0: http://localhost:19006
       Cors__AllowedOrigins__1: http://localhost:3000
       Cors__AllowedOrigins__2: http://localhost:5173
       Cors__AllowedOrigins__3: http://localhost:8081
     ports:
       - "5048:8080"
+    volumes:
+      - ./backups:/backups
     depends_on:
       postgres:
         condition: service_healthy

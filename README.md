@@ -315,6 +315,137 @@ Os dois endpoints retornam `202 Accepted` com mensagem de aceite estrutural.
 
 No estado atual, as metricas retornam valores zerados ate que os fluxos de missao, resultado e impacto sejam persistidos.
 
+## Backup automatizado e seguranca operacional
+
+O repositorio inclui uma implementacao simples e demonstravel de backup automatizado
+do PostgreSQL para a entrega de ciberseguranca. O backup e executado por script
+Linux, pode ser agendado pelo Jenkins e tambem pode ser disparado manualmente por
+endpoints administrativos da API.
+
+Artefatos principais:
+
+- `scripts/backup-db.sh`: executa `pg_dump` e registra log.
+- `jenkins/Jenkinsfile`: pipeline com validacao, execucao e arquivamento de evidencias.
+- `docs/evidences/README.md`: guia de prints para a entrega.
+- `docs/logs-example/backup.log.example`: exemplo sanitizado do formato de log.
+
+### Variaveis de ambiente do backup
+
+O script usa variaveis padrao do PostgreSQL. Nao deixe senha hardcoded em arquivos
+versionados.
+
+```bash
+export PGHOST="localhost"
+export PGPORT="5432"
+export PGDATABASE="orbital_academy"
+export PGUSER="orbital"
+export PGPASSWORD="senha-nao-versionada"
+```
+
+Por padrao, o dump e salvo em `/backups` e o log em `/backups/logs/backup.log`.
+Para demonstracao local sem permissao de escrita em `/backups`, use uma pasta local
+ignorada pelo Git:
+
+```bash
+export BACKUP_DIR="$(pwd)/backups"
+export BACKUP_LOG_FILE="$(pwd)/backups/logs/backup.log"
+scripts/backup-db.sh
+```
+
+O nome gerado segue o formato:
+
+```text
+orbital_academy_YYYYMMDD_HHMMSS.dump
+```
+
+### Jenkins
+
+Crie um job Pipeline apontando para `jenkins/Jenkinsfile`. Configure no Jenkins as
+variaveis nao sensiveis:
+
+```text
+PGHOST
+PGPORT
+PGDATABASE
+```
+
+Crie tambem uma credencial do tipo `Username with password` com ID:
+
+```text
+orbital-postgres-backup
+```
+
+O Jenkinsfile usa essa credencial para preencher `PGUSER` e `PGPASSWORD` apenas no
+momento da execucao. O pipeline agenda execucao diaria por `cron('H 2 * * *')`,
+roda o script e arquiva evidencias em `jenkins-evidence/`.
+
+### Configuracao da API para backup manual
+
+A API usa a secao `Security:Backup`:
+
+```json
+{
+  "Security": {
+    "Backup": {
+      "ScriptPath": "scripts/backup-db.sh",
+      "BackupDirectory": "/backups",
+      "LogFilePath": "/backups/logs/backup.log",
+      "MaxLogLines": 100,
+      "TimeoutSeconds": 120
+    }
+  }
+}
+```
+
+As mesmas variaveis `PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER` e `PGPASSWORD`
+precisam estar disponiveis no ambiente da API para que o endpoint manual consiga
+executar o script.
+
+### Endpoints administrativos
+
+Os endpoints de seguranca exigem JWT com claim `role=admin`.
+
+| Metodo | Rota | Acesso | Objetivo |
+| --- | --- | --- | --- |
+| POST | `/api/security/backup/run` | Admin | Executar backup manualmente. |
+| GET | `/api/security/backup/status` | Admin | Consultar ultimo status registrado no log. |
+| GET | `/api/security/logs?lines=20` | Admin | Ler ultimas linhas do log, limitado a 100 linhas por requisicao. |
+| POST | `/api/security/encrypt-test` | Admin | Demonstrar criptografia simples com Data Protection. |
+
+Para testar com usuario inicial, configure `Authentication__InitialUser__Papel=admin`,
+faca login em `/usuario/login` e use o token:
+
+```bash
+curl -X POST http://localhost:5048/api/security/backup/run \
+  -H "Authorization: Bearer <token>"
+
+curl http://localhost:5048/api/security/backup/status \
+  -H "Authorization: Bearer <token>"
+
+curl "http://localhost:5048/api/security/logs?lines=20" \
+  -H "Authorization: Bearer <token>"
+
+curl -X POST http://localhost:5048/api/security/encrypt-test \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{"valor":"campo sensivel de demonstracao"}'
+```
+
+As respostas nao retornam senha, connection string completa ou token. O endpoint de
+criptografia nao retorna o valor original enviado.
+
+### Evidencias para a entrega
+
+Prints recomendados:
+
+- job Jenkins com build executado;
+- console do Jenkins mostrando validacao, execucao e arquivamento;
+- artefatos `jenkins-evidence/backup.log` e `jenkins-evidence/backups-list.txt`;
+- listagem de `/backups` com arquivo `.dump`;
+- ultimas linhas de `/backups/logs/backup.log`;
+- chamadas Swagger ou cURL dos endpoints administrativos;
+- exemplo de resposta do `encrypt-test` com o valor protegido.
+
 ## Banco de dados e migrations
 
 A persistencia atual contempla a entidade `Usuario`, mapeada para a tabela `usuarios`, com indice unico em `email_normalizado` e senha armazenada apenas como hash.
@@ -342,7 +473,6 @@ A suite cobre convencoes de arquitetura, configuracao de autenticacao, CORS, aut
 
 ## Orientacoes para desenvolvimento e manutencao
 
-- Use o documento base `Orbital-Academy-documentacao-base-v1.1.docx` como fonte de verdade para regras de negocio, escopo e decisoes funcionais.
 - Preserve a API .NET como backend principal deste repositorio.
 - Mantenha separacao entre `Api`, `Application`, `Domain` e `Infrastructure`.
 - Nao implemente cadastro publico, refresh token, policies finais ou novas funcionalidades de negocio sem confirmacao do escopo.
