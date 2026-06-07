@@ -2,12 +2,6 @@
 
 Regras de trabalho para agentes no projeto Orbital Academy.
 
-## Fonte de verdade obrigatoria
-
-Antes de qualquer acao, leia o documento:
-
-`Orbital-Academy-documentacao-base-v1.1.docx`
-
 Esse documento e a unica fonte de verdade para:
 
 - regras de negocio;
