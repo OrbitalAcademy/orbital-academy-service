@@ -2,6 +2,17 @@
 
 Backend principal do Orbital Academy, construido em ASP.NET Core para centralizar a API do MVP, a autenticacao local de demonstracao, a persistencia inicial em PostgreSQL e o catalogo espacial de satelites, sensores e alertas.
 
+## Integrantes
+RM556803 - Eduardo Dallabella Lima
+
+RM558468 - Abner de Paiva Barbosa
+
+RM554535 - Heloísa Leal
+
+RM550494 - Mariana Neugebauer Dourado
+
+RM554746 - Beatriz Vieira de Novais
+
 ## Visao geral
 
 O Orbital Academy e uma plataforma educacional-operacional voltada a transformar dados espaciais em decisao real. A proposta do produto e permitir que uma pessoa opere uma missao: observar dados de satelite, acompanhar uma previsao de risco, validar informacoes em campo, decidir onde aplicar recursos limitados e medir impacto.
