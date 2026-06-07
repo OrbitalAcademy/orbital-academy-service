@@ -2,9 +2,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using OrbitalAcademy.Application.Security;
 using OrbitalAcademy.Application.Usuarios;
 using OrbitalAcademy.Infrastructure.Authentication;
 using OrbitalAcademy.Infrastructure.Persistence;
+using OrbitalAcademy.Infrastructure.Security;
 using OrbitalAcademy.Infrastructure.Usuarios;
 
 namespace OrbitalAcademy.Infrastructure;
@@ -22,6 +24,13 @@ public static class DependencyInjection
 
         services.AddSingleton<IValidateOptions<InitialUserOptions>, InitialUserOptionsValidator>();
 
+        services
+            .AddOptions<DatabaseBackupOptions>()
+            .Bind(configuration.GetSection(DatabaseBackupOptions.SectionName))
+            .ValidateOnStart();
+
+        services.AddSingleton<IValidateOptions<DatabaseBackupOptions>, DatabaseBackupOptionsValidator>();
+
         services.AddDbContext<OrbitalAcademyDbContext>(options =>
         {
             string connectionString = configuration.GetConnectionString("OrbitalAcademy")
@@ -36,6 +45,7 @@ public static class DependencyInjection
         });
 
         services.AddScoped<IUsuarioRepository, EfUsuarioRepository>();
+        services.AddSingleton<IDatabaseBackupService, DatabaseBackupService>();
         services.AddHostedService<InitialUserSeederHostedService>();
 
         return services;

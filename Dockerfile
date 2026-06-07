@@ -19,7 +19,15 @@ RUN dotnet publish src/OrbitalAcademy.Api/OrbitalAcademy.Api.csproj \
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY --from=build /app/publish .
+COPY --from=build /src/scripts/backup-db.sh ./scripts/backup-db.sh
+
+RUN chmod +x ./scripts/backup-db.sh \
+    && mkdir -p /backups/logs
 
 EXPOSE 8080
 

@@ -1,5 +1,6 @@
 using Microsoft.OpenApi;
 using OrbitalAcademy.Application;
+using OrbitalAcademy.Application.Security;
 using OrbitalAcademy.Api.Security;
 using OrbitalAcademy.Infrastructure;
 
@@ -23,16 +24,22 @@ builder.Services.AddSwaggerGen(options =>
         Scheme = "bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Informe um token JWT no formato Bearer."
+        Description = "Cole somente o token JWT. O Swagger envia o prefixo Bearer automaticamente."
     });
 
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecuritySchemeReference("Bearer", document, null)] = []
+    });
 });
 builder.Services.AddProblemDetails();
 builder.Services.AddHealthChecks();
+builder.Services.AddDataProtection();
 builder.Services.AddApplication();
 builder.Services.AddConfiguredSecurity(builder.Configuration);
 builder.Services.AddJwtTokenGeneration();
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddScoped<ISensitiveDataEncryptionService, DataProtectionSensitiveDataEncryptionService>();
 
 WebApplication app = builder.Build();
 
