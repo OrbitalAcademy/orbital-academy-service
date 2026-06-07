@@ -55,6 +55,20 @@ public sealed class ControllerAuthorizationConventionsTests
     }
 
     [Fact]
+    public void Security_controller_requires_admin_role()
+    {
+        // Given security operations are administrative.
+        Type securityController = typeof(OrbitalAcademy.Api.Controllers.SecurityController);
+
+        // Then the controller requires the current admin role claim emitted by local JWT.
+        AuthorizeAttribute authorizeAttribute = securityController
+            .GetCustomAttributes<AuthorizeAttribute>(inherit: true)
+            .Single();
+
+        Assert.Equal("admin", authorizeAttribute.Roles);
+    }
+
+    [Fact]
     public void Mvp_endpoint_base_routes_are_declared()
     {
         // Given the MVP endpoint base has been authorized for this phase.
@@ -78,6 +92,10 @@ public sealed class ControllerAuthorizationConventionsTests
         Assert.Contains("POST otimizar", routes);
         Assert.Contains("GET indicadores", routes);
         Assert.Contains("POST usuario/login", routes);
+        Assert.Contains("POST api/security/backup/run", routes);
+        Assert.Contains("GET api/security/backup/status", routes);
+        Assert.Contains("GET api/security/logs", routes);
+        Assert.Contains("POST api/security/encrypt-test", routes);
     }
 
     private static bool DeclaresAccessIntent(MemberInfo member)
