@@ -1,0 +1,95 @@
+pipeline {
+    agent any
+
+    triggers {
+        cron('H 2 * * *')
+    }
+
+    options {
+        timestamps()
+        disableConcurrentBuilds()
+    }
+
+    environment {
+        BACKUP_DIR = '/backups'
+        BACKUP_LOG_FILE = '/backups/logs/backup.log'
+        BACKUP_FILE_PREFIX = 'orbital_academy'
+    }
+
+    stages {
+        stage('Validate environment') {
+            steps {
+                sh '''
+                    set -eu
+                    test -f scripts/backup-db.sh
+                    chmod +x scripts/backup-db.sh
+                    command -v pg_dump >/dev/null
+                    : "${PGHOST:?Configure PGHOST no Jenkins}"
+                    : "${PGPORT:?Configure PGPORT no Jenkins}"
+                    : "${PGDATABASE:?Configure PGDATABASE no Jenkins}"
+                    mkdir -p "${BACKUP_DIR}" "$(dirname "${BACKUP_LOG_FILE}")"
+                '''
+
+                // Crie no Jenkins uma credencial do tipo "Username with password"
+                // com ID "orbital-postgres-backup". O username vira PGUSER e a senha vira PGPASSWORD.
+                withCredentials([usernamePassword(
+                    credentialsId: 'orbital-postgres-backup',
+                    usernameVariable: 'PGUSER',
+                    passwordVariable: 'PGPASSWORD'
+                )]) {
+                    sh '''
+                        set -eu
+                        : "${PGUSER:?Credencial PGUSER ausente}"
+                        : "${PGPASSWORD:?Credencial PGPASSWORD ausente}"
+                    '''
+                }
+            }
+        }
+
+        stage('Run database backup') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'orbital-postgres-backup',
+                    usernameVariable: 'PGUSER',
+                    passwordVariable: 'PGPASSWORD'
+                )]) {
+                    sh '''
+                        set -eu
+                        scripts/backup-db.sh
+                    '''
+                }
+            }
+        }
+
+        stage('Archive evidences') {
+            steps {
+                sh '''
+                    set -eu
+                    rm -rf jenkins-evidence
+                    mkdir -p jenkins-evidence
+                    if [ -f "${BACKUP_LOG_FILE}" ]; then
+                        cp "${BACKUP_LOG_FILE}" jenkins-evidence/backup.log
+                    fi
+                    {
+                        echo "Backup directory: ${BACKUP_DIR}"
+                        ls -la "${BACKUP_DIR}" || true
+                        echo
+                        echo "Backup logs:"
+                        ls -la "$(dirname "${BACKUP_LOG_FILE}")" || true
+                    } > jenkins-evidence/backups-list.txt
+                '''
+                archiveArtifacts artifacts: 'jenkins-evidence/**', allowEmptyArchive: true, fingerprint: true
+            }
+        }
+    }
+
+    post {
+        always {
+            sh '''
+                if [ -f "${BACKUP_LOG_FILE}" ]; then
+                    tail -n 20 "${BACKUP_LOG_FILE}"
+                fi
+            '''
+        }
+    }
+}

@@ -35,6 +35,12 @@ appsettings.*.Local.json
 logs/
 *.log
 
+# Backup runtime artifacts
+backups/
+*.dump
+*.backup
+jenkins-evidence/
+
 # NuGet
 *.nupkg
 packages/

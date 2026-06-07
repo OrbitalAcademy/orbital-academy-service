@@ -1,0 +1,2 @@
+2026-06-06T02:00:01Z | status=SUCCESS | file=orbital_academy_20260606_020000.dump | exit_code=0 | message=backup concluido
+2026-06-07T02:00:01Z | status=ERROR | file=orbital_academy_20260607_020000.dump | exit_code=1 | message=falha ao executar pg_dump
