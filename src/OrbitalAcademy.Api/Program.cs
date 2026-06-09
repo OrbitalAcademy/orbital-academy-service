@@ -1,6 +1,10 @@
 using Microsoft.OpenApi;
 using OrbitalAcademy.Application;
+<<<<<<< Updated upstream
 using OrbitalAcademy.Application.Security;
+=======
+using OrbitalAcademy.Api.Observability;
+>>>>>>> Stashed changes
 using OrbitalAcademy.Api.Security;
 using OrbitalAcademy.Infrastructure;
 
@@ -61,6 +65,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors(CorsPolicyNames.ConfiguredOrigins);
 app.UseAuthentication();
+app.UseEndpointLogging();
 app.UseAuthorization();
 
 app.MapControllers();
