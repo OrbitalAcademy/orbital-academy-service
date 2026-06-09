@@ -147,7 +147,7 @@ dotnet dev-certs https --trust
 
 ## Swagger
 
-Em ambiente `Development`, a documentacao interativa fica disponivel em:
+Em ambiente `Development`, a documentação interativa fica disponivel em:
 
 ```text
 http://localhost:5048/swagger
