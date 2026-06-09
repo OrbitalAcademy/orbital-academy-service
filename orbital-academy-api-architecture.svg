@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900" role="img" aria-labelledby="title desc">
+  <title id="title">Orbital Academy Service - API Architecture</title>
+  <desc id="desc">Simple diagram of the observed API architecture, controllers, authentication flow, application layer, domain and infrastructure, and PostgreSQL.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb"/>
+    </marker>
+    <filter id="softShadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.12"/>
+    </filter>
+    <style>
+      .background { fill: #f8fafc; }
+      .title { fill: #0f172a; font-family: Arial, Helvetica, sans-serif; font-size: 32px; font-weight: 700; }
+      .subtitle { fill: #475569; font-family: Arial, Helvetica, sans-serif; font-size: 15px; }
+      .section-title { fill: #0f172a; font-family: Arial, Helvetica, sans-serif; font-size: 17px; font-weight: 700; }
+      .box-title { fill: #0f172a; font-family: Arial, Helvetica, sans-serif; font-size: 18px; font-weight: 700; }
+      .box-text { fill: #334155; font-family: Arial, Helvetica, sans-serif; font-size: 14px; }
+      .small-text { fill: #475569; font-family: Arial, Helvetica, sans-serif; font-size: 12px; }
+      .mono { fill: #0f172a; font-family: Consolas, Menlo, Monaco, monospace; font-size: 13px; }
+      .mono-small { fill: #334155; font-family: Consolas, Menlo, Monaco, monospace; font-size: 12px; }
+      .card { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; filter: url(#softShadow); }
+      .client { fill: #ecfeff; stroke: #06b6d4; }
+      .api { fill: #eff6ff; stroke: #2563eb; }
+      .layer { fill: #f8fafc; stroke: #64748b; }
+      .auth { fill: #fff7ed; stroke: #ea580c; }
+      .public { fill: #f0fdf4; stroke: #16a34a; }
+      .protected { fill: #fefce8; stroke: #ca8a04; }
+      .database { fill: #f5f3ff; stroke: #7c3aed; }
+      .line { stroke: #2563eb; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+      .muted-line { stroke: #94a3b8; stroke-width: 2; fill: none; marker-end: url(#arrow); stroke-dasharray: 6 6; }
+      .pill-text { fill: #0f172a; font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: 700; }
+    </style>
+  </defs>
+
+  <rect class="background" x="0" y="0" width="1400" height="900"/>
+
+  <text class="title" x="64" y="64">Orbital Academy Service - Arquitetura observada da API</text>
+  <text class="subtitle" x="64" y="92">SVG documental baseado em AGENTS.md, documentacao local disponivel e atributos dos controllers existentes.</text>
+
+  <rect class="card client" x="64" y="146" width="220" height="132" rx="8"/>
+  <text class="box-title" x="92" y="186">Cliente</text>
+  <text class="box-text" x="92" y="216">Swagger UI</text>
+  <text class="box-text" x="92" y="240">Postman</text>
+  <text class="box-text" x="92" y="264">Aplicacao consumidora</text>
+
+  <rect class="card api" x="364" y="124" width="330" height="176" rx="8"/>
+  <text class="box-title" x="392" y="164">ASP.NET Core API</text>
+  <text class="box-text" x="392" y="194">Controllers com rotas HTTP</text>
+  <text class="box-text" x="392" y="218">Swagger habilitado em Development</text>
+  <text class="box-text" x="392" y="242">CORS configurado por ambiente</text>
+  <text class="mono-small" x="392" y="270">src/OrbitalAcademy.Api</text>
+
+  <rect class="card layer" x="764" y="124" width="238" height="176" rx="8"/>
+  <text class="box-title" x="792" y="164">Application</text>
+  <text class="box-text" x="792" y="194">Servicos de aplicacao</text>
+  <text class="box-text" x="792" y="218">Contratos internos</text>
+  <text class="box-text" x="792" y="242">Autenticacao de usuario</text>
+  <text class="mono-small" x="792" y="270">OrbitalAcademy.Application</text>
+
+  <rect class="card layer" x="1066" y="110" width="270" height="90" rx="8"/>
+  <text class="box-title" x="1094" y="148">Domain</text>
+  <text class="box-text" x="1094" y="176">Entidades e regras ja modeladas</text>
+
+  <rect class="card layer" x="1066" y="232" width="270" height="92" rx="8"/>
+  <text class="box-title" x="1094" y="270">Infrastructure</text>
+  <text class="box-text" x="1094" y="298">EF Core, Npgsql e repositorios</text>
+
+  <path class="line" d="M 284 212 H 352"/>
+  <path class="line" d="M 694 212 H 752"/>
+  <path class="line" d="M 1002 176 H 1054"/>
+  <path class="line" d="M 1002 248 H 1054"/>
+
+  <g aria-label="PostgreSQL database">
+    <path class="database" d="M 1132 426 C 1132 398, 1268 398, 1268 426 L 1268 536 C 1268 564, 1132 564, 1132 536 Z"/>
+    <ellipse class="database" cx="1200" cy="426" rx="68" ry="28"/>
+    <path d="M 1132 481 C 1132 509, 1268 509, 1268 481" fill="none" stroke="#7c3aed" stroke-width="1.5"/>
+    <text class="box-title" x="1153" y="468">PostgreSQL</text>
+    <text class="box-text" x="1148" y="496">Banco oficial</text>
+    <text class="box-text" x="1148" y="520">usuarios via DbContext</text>
+  </g>
+  <path class="line" d="M 1200 324 V 390"/>
+
+  <rect class="card auth" x="64" y="360" width="420" height="200" rx="8"/>
+  <text class="section-title" x="92" y="400">Autenticacao observada</text>
+  <text class="mono" x="92" y="434">POST /usuario/login</text>
+  <text class="box-text" x="92" y="462">Publico com [AllowAnonymous]</text>
+  <text class="box-text" x="92" y="490">Valida email + senha e emite JWT HS256</text>
+  <text class="box-text" x="92" y="518">Token usa formato Bearer</text>
+  <rect class="public" x="322" y="414" width="122" height="30" rx="15"/>
+  <text class="pill-text" x="348" y="434">PUBLICO</text>
+
+  <rect class="card public" x="524" y="360" width="350" height="200" rx="8"/>
+  <text class="section-title" x="552" y="400">Endpoints publicos</text>
+  <text class="mono" x="552" y="434">GET /api/health</text>
+  <text class="box-text" x="552" y="462">HealthController com [AllowAnonymous]</text>
+  <text class="mono" x="552" y="498">GET /health</text>
+  <text class="box-text" x="552" y="526">Health check tecnico mapeado em Program.cs</text>
+
+  <rect class="card protected" x="914" y="360" width="422" height="200" rx="8"/>
+  <text class="section-title" x="942" y="400">Endpoints protegidos</text>
+  <text class="box-text" x="942" y="434">Controllers com [Authorize]</text>
+  <text class="box-text" x="942" y="462">Requerem Authorization: Bearer &lt;token&gt;</text>
+  <text class="box-text" x="942" y="490">Policies finais e matriz concreta nao estao definidas</text>
+  <rect class="protected" x="1182" y="414" width="112" height="30" rx="15"/>
+  <text class="pill-text" x="1207" y="434">BEARER</text>
+
+  <path class="muted-line" d="M 274 360 V 318 C 274 306, 364 306, 364 244"/>
+  <path class="muted-line" d="M 699 360 V 318 C 699 306, 560 306, 560 300"/>
+  <path class="muted-line" d="M 1125 360 V 332 C 1125 314, 694 314, 694 244"/>
+
+  <rect class="card" x="64" y="622" width="1272" height="196" rx="8"/>
+  <text class="section-title" x="92" y="662">Grupos de endpoints confirmados nos controllers</text>
+
+  <g>
+    <rect class="public" x="92" y="692" width="158" height="44" rx="8"/>
+    <text class="mono-small" x="112" y="719">health</text>
+    <rect class="public" x="270" y="692" width="158" height="44" rx="8"/>
+    <text class="mono-small" x="290" y="719">login</text>
+    <rect class="protected" x="448" y="692" width="194" height="44" rx="8"/>
+    <text class="mono-small" x="468" y="719">catalogo/satelites</text>
+    <rect class="protected" x="662" y="692" width="158" height="44" rx="8"/>
+    <text class="mono-small" x="682" y="719">areas</text>
+    <rect class="protected" x="840" y="692" width="174" height="44" rx="8"/>
+    <text class="mono-small" x="860" y="719">risco/ranking</text>
+    <rect class="protected" x="1034" y="692" width="158" height="44" rx="8"/>
+    <text class="mono-small" x="1054" y="719">missoes</text>
+    <rect class="protected" x="1212" y="692" width="96" height="44" rx="8"/>
+    <text class="mono-small" x="1232" y="719">validar</text>
+  </g>
+
+  <g>
+    <rect class="protected" x="92" y="758" width="158" height="44" rx="8"/>
+    <text class="mono-small" x="112" y="785">otimizar</text>
+    <rect class="protected" x="270" y="758" width="158" height="44" rx="8"/>
+    <text class="mono-small" x="290" y="785">indicadores</text>
+  </g>
+
+  <text class="small-text" x="64" y="856">Nota: o arquivo DOCX citado como fonte obrigatoria nao foi encontrado no workspace. Este diagrama nao usa docs/architecture/phase-2-structure-and-security.md, que tambem nao existe aqui.</text>
+  <text class="small-text" x="64" y="878">Escopo: documentacao visual. Nenhuma funcionalidade nova, regra de negocio, endpoint ou alteracao de codigo foi representada como implementacao adicional.</text>
+</svg>

@@ -32,6 +32,10 @@ A aplicacao fornece a base HTTP para os fluxos principais do Orbital Academy:
 
 Os endpoints de negocio ainda nao implementam o fluxo completo de decisao, ML, camera ou otimizacao. Eles existem como contratos iniciais seguros e documentados para evolucao incremental.
 
+## Diagrama
+
+O diagrama pode ser visualizado dentro de orbital-academy-api-architecture.svg
+
 ## Evidências
 
 Todas evidências de que o projeto funciona estão documentadas dentro de evidencias.md
@@ -357,7 +361,6 @@ A suite cobre convencoes de arquitetura, configuracao de autenticacao, CORS, aut
 
 ## Orientacoes para desenvolvimento e manutencao
 
-- Use o documento base `Orbital-Academy-documentacao-base-v1.1.docx` como fonte de verdade para regras de negocio, escopo e decisoes funcionais.
 - Preserve a API .NET como backend principal deste repositorio.
 - Mantenha separacao entre `Api`, `Application`, `Domain` e `Infrastructure`.
 - Nao implemente cadastro publico, refresh token, policies finais ou novas funcionalidades de negocio sem confirmacao do escopo.
