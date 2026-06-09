@@ -32,6 +32,10 @@ A aplicacao fornece a base HTTP para os fluxos principais do Orbital Academy:
 
 Os endpoints de negocio ainda nao implementam o fluxo completo de decisao, ML, camera ou otimizacao. Eles existem como contratos iniciais seguros e documentados para evolucao incremental.
 
+## Evidências
+
+Todas evidências de que o projeto funciona estão documentadas dentro de evidencias.md
+
 ## Tecnologias utilizadas
 
 - .NET 10
