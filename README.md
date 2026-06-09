@@ -31,6 +31,9 @@ Os endpoints de negocio ainda nao implementam o fluxo completo de decisao, ML, c
 - JWT Bearer, com suporte a HS256 local para demonstracao
 - ASP.NET Core Identity PasswordHasher para hash de senha
 - Docker e Docker Compose
+- Jenkins Pipeline
+- Shell script com `pg_dump` para backup automatizado
+- ASP.NET Core Data Protection para demonstracao de criptografia
 - xUnit v3
 - Central Package Management via `Directory.Packages.props`
 
@@ -315,6 +318,61 @@ Os dois endpoints retornam `202 Accepted` com mensagem de aceite estrutural.
 
 No estado atual, as metricas retornam valores zerados ate que os fluxos de missao, resultado e impacto sejam persistidos.
 
+## Entrega de ciberseguranca no repositorio
+
+Esta secao atende diretamente aos itens pedidos para o repositorio no arquivo
+`GS -Cyber.pdf`. A implementacao pratica escolhida foi o backup automatizado do
+PostgreSQL, integrado ao backend .NET sem criar novas regras de negocio para a
+missao agro.
+
+### Codigo ou arquivos da implementacao pratica
+
+O codigo da implementacao pratica esta concentrado no fluxo de backup
+automatizado e nos endpoints administrativos de seguranca:
+
+- `scripts/backup-db.sh`: valida o ambiente, executa `pg_dump --format=custom`,
+  grava status no log e ajusta a permissao do arquivo `.dump`.
+- `jenkins/Jenkinsfile`: agenda o backup, valida variaveis, usa a credencial
+  `orbital-postgres-backup`, executa o script e arquiva evidencias do job.
+- `src/OrbitalAcademy.Api/Controllers/SecurityController.cs`: expoe
+  `/api/security/backup/run`, `/api/security/backup/status`,
+  `/api/security/logs` e `/api/security/encrypt-test`.
+- `src/OrbitalAcademy.Application/Security`,
+  `src/OrbitalAcademy.Infrastructure/Security` e
+  `src/OrbitalAcademy.Api/Security`: concentram contratos, servicos,
+  configuracoes de backup e demonstracao de criptografia com Data Protection.
+- `tests/OrbitalAcademy.ArchitectureTests/DatabaseBackupServiceTests.cs`:
+  cobre leitura de status, limite de log, validacao de configuracao, erro
+  controlado, timeout e execucao concorrente do backup.
+
+### Evidencias da implementacao
+
+As evidencias são produzidas pela execução do pipeline Jenkins, do script
+`scripts/backup-db.sh` e dos endpoints administrativos da API. O repositorio
+mantem `docs/logs-example/backup.log.example` como exemplo sanitizado do formato de log.
+
+Logs reais, prints de tela e dumps gerados durante a demonstracao precisam ser
+revisados e sanitizados antes da entrega. Eles nao devem expor tokens JWT,
+senhas, connection strings completas, hosts sensiveis ou dados reais do banco.
+
+### README explicando como a seguranca foi integrada ao projeto
+
+A seguranca foi integrada ao Orbital Academy por meio de um fluxo operacional de
+backup do PostgreSQL, porque o banco sustenta a API principal do MVP e os dados
+necessarios para a continuidade da missao agro. O script gera dumps em formato
+custom do PostgreSQL, registra status de sucesso ou erro em log e remove dumps
+incompletos em caso de falha.
+
+O Jenkins executa esse fluxo de forma agendada e usa a credencial
+`orbital-postgres-backup` para evitar senha hardcoded no repositorio. A API
+tambem oferece endpoints administrativos protegidos por JWT com `role=admin`
+para disparar backup manual, consultar status, ler logs limitados e demonstrar
+criptografia simples com ASP.NET Core Data Protection.
+
+Essa integracao documenta seguranca operacional e continuidade da solucao, mas
+nao autoriza cadastro publico, refresh token, recuperacao de senha, matriz final
+de permissoes ou novas regras de negocio sem uma fase futura aprovada.
+
 ## Backup automatizado e seguranca operacional
 
 O repositorio inclui uma implementacao simples e demonstravel de backup automatizado
@@ -433,18 +491,6 @@ curl -X POST http://localhost:5048/api/security/encrypt-test \
 
 As respostas nao retornam senha, connection string completa ou token. O endpoint de
 criptografia nao retorna o valor original enviado.
-
-### Evidencias para a entrega
-
-Prints recomendados:
-
-- job Jenkins com build executado;
-- console do Jenkins mostrando validacao, execucao e arquivamento;
-- artefatos `jenkins-evidence/backup.log` e `jenkins-evidence/backups-list.txt`;
-- listagem de `/backups` com arquivo `.dump`;
-- ultimas linhas de `/backups/logs/backup.log`;
-- chamadas Swagger ou cURL dos endpoints administrativos;
-- exemplo de resposta do `encrypt-test` com o valor protegido.
 
 ## Banco de dados e migrations
 
