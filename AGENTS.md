@@ -150,7 +150,6 @@ Fase 2 iniciada com estrutura tecnica aprovada:
 - API ASP.NET Core com Controllers mirando `net10.0`;
 - camadas `Api`, `Application`, `Domain` e `Infrastructure`;
 - testes estruturais em `tests/OrbitalAcademy.ArchitectureTests`;
-- documentacao tecnica em `docs/architecture/phase-2-structure-and-security.md`;
 - PostgreSQL definido como banco oficial;
 - Infrastructure preparada para EF Core + Npgsql.
 - CORS parametrizado por configuracao, com localhost apenas em desenvolvimento.
