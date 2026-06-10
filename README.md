@@ -34,11 +34,31 @@ Os endpoints de negocio ainda nao implementam o fluxo completo de decisao, ML, c
 
 ## Diagrama
 
-O diagrama pode ser visualizado dentro de orbital-academy-api-architecture.svg
+O diagrama de arquitetura pode ser visualizado em [orbital-academy-api-architecture.svg](orbital-academy-api-architecture.svg).
+
+O diagrama de fluxo da demonstracao pode ser visualizado em [orbital-academy-flow.svg](orbital-academy-flow.svg).
 
 ## Evidências
 
-Todas evidências de que o projeto funciona estão documentadas dentro de evidencias.md
+Todas as evidencias de execucao do projeto estao documentadas em [EVIDENCIAS.MD](EVIDENCIAS.MD).
+
+## Checklist da entrega C#
+
+| Criterio da entrega | Onde aparece no projeto |
+| --- | --- |
+| Projeto .NET alinhado a Global Solution | API ASP.NET Core do Orbital Academy para missao agro, catalogo espacial, autenticacao local e contratos do Console de Missao. |
+| API Core | `src/OrbitalAcademy.Api` usa ASP.NET Core Web API com Controllers e alvo `net10.0`. |
+| Banco de dados opcional | PostgreSQL oficial com EF Core/Npgsql, `OrbitalAcademyDbContext`, migration inicial de `Usuario` e seed opcional sem senha versionada. |
+| Modelagem de dominio e POO | `OrbitalAcademy.Domain` contem `Satelite`, `Sensor`, `Alerta`, `Usuario`, `Area` e `Missao`, com encapsulamento, heranca e polimorfismo. |
+| Classes publicas, privadas, estaticas e partial | Controllers, entidades, services e extension methods usam classes publicas; `Program` e `partial`; helpers internos/privados existem em implementacoes e testes. |
+| Abstracao e interfaces | `Sensor` e `Alerta` sao abstratas; `ICatalogoSatelitesService`, `IUsuarioAuthenticationService`, `IUsuarioRepository` e `IJwtTokenService` sustentam injecao de dependencia e testes. |
+| Logica de fluxo, metodos e datas | Controllers, services e dominio usam metodos dedicados; contratos e dominio usam `DateTimeOffset` para prazos, validade de alertas e datas de validacao. |
+| Tratamento de excecoes | API usa `ProblemDetails` e `UseExceptionHandler`; `CatalogoEspacialException` e capturada com resposta segura sem vazar detalhe interno. |
+| Structs/Partial | `PeriodoOperacional` e um `readonly record struct`; `Program` e `partial` para suporte a testes e hosting. |
+| Organizacao | Solucao separada em `Api`, `Application`, `Domain`, `Infrastructure` e `tests`, com README, `PROJETO.md`, diagramas e evidencias. |
+| Evidencias de execucao | Prints e resultado de testes estao em [EVIDENCIAS.MD](EVIDENCIAS.MD); a suite validada possui `65` testes aprovados. |
+
+Os endpoints de areas, ranking, missoes, validacao, otimizacao e indicadores continuam como contratos estruturais do MVP. Eles nao representam regras finais de negocio, ML, camera, otimizacao ou matriz de permissoes.
 
 ## Tecnologias utilizadas
 

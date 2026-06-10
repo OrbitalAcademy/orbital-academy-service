@@ -1,38 +1,64 @@
-Esse arquivo tem o objetivo de mostrar as evidências de que o projeto está funcional e roda de acordo com a arquitetura
+# Evidencias de execucao
 
-Primeiro, o docker começa o build do projeto, passando pelo doker-composer.yml, que atualmente pode ser visualizado 
-através do docker-compsose-example.yml e alterado de acordo com as credeciais do projeto.
+Este arquivo registra evidencias de que o backend principal do Orbital Academy executa conforme a arquitetura documentada. As imagens foram mantidas em `evidencias/` e os comandos abaixo usam apenas dados locais de demonstracao.
 
-![docker.png](evidencias/docker.png)
+## Docker e build da aplicacao
 
-Para mostrar que o projeto realmente está no ar, checamos a rota helthcheck pelo postman:
-![postman-health.png](evidencias/postman-health.png)
+O projeto pode ser iniciado com Docker Compose, subindo a API ASP.NET Core e o PostgreSQL local. O arquivo `docker-compose-example.yml` serve como modelo seguro para recriar a configuracao sem versionar credenciais reais.
 
-Além disso, como podemos ver, o swagger também está acessivel para conseguirmos verificar as possíveis rotas do projeto:
-![swagger.png](evidencias/swagger.png)
+![Docker build e execucao](evidencias/docker.png)
 
+## Health check
 
+Com a API em execucao, a rota publica de health check confirma que o servico esta respondendo.
 
-Passando pela autenticação, que é um dos principais pontos de segunrança, quando falamos em integridade e privacidade de
-dados em um sistema:
+![Health check no Postman](evidencias/postman-health.png)
 
-Para criação de um usuário, atualmente o sistema cria o usuário atrvés desses comandos, apenas para teste:
+## Swagger e rotas da API
 
-```csharp
+Em ambiente de desenvolvimento, o Swagger exibe os endpoints disponiveis da API, incluindo login, catalogo, areas, ranking, missoes, validacao, otimizacao e indicadores.
+
+![Swagger da API](evidencias/swagger.png)
+
+## Usuario inicial e banco de dados
+
+O projeto nao versiona senha ou credenciais reais. Para demonstracao, um usuario inicial pode ser criado por variaveis de ambiente:
+
+```bash
 export ORBITAL_INITIAL_USER_ENABLED=true
 export ORBITAL_INITIAL_USER_EMAIL="operador@orbital.local"
 export ORBITAL_INITIAL_USER_NOME="Operador Demo"
 export ORBITAL_INITIAL_USER_PAPEL="operador"
 export ORBITAL_INITIAL_USER_UNIDADE="Unidade Agro"
-export ORBITAL_INITIAL_USER_PASSWORD="123456"
+export ORBITAL_INITIAL_USER_PASSWORD="senha-nao-versionada"
 
 docker compose up --build
 ```
 
-Banco:
+A persistencia usa PostgreSQL com EF Core/Npgsql. A tabela `usuarios` armazena senha apenas como hash e possui indice unico para `email_normalizado`.
 
-![banco-user.png](evidencias/banco-user.png)
+![Usuario persistido no banco](evidencias/banco-user.png)
 
+## Login, JWT e endpoint protegido
 
-Após a criação do usuário, é possível autenticar o usuário e receber o JWT, onde, com ele, será possível realizar outras autenticações.
-![swagger-user.png](evidencias/swagger-user.png)![img.png](img.png)
+Depois do seed de demonstracao, a rota publica `POST /usuario/login` autentica por email e senha e retorna um JWT local HS256. O token e usado no Swagger ou em chamadas HTTP no formato `Authorization: Bearer <token>` para acessar endpoints protegidos, como `GET /catalogo/satelites`.
+
+![Login retornando JWT no Swagger](evidencias/swagger-user.png)
+
+## Testes automatizados
+
+A suite foi executada com o SDK .NET 10 usando:
+
+```bash
+dotnet test OrbitalAcademy.sln --no-restore
+```
+
+Resultado validado:
+
+```text
+Passed: 65
+Failed: 0
+Skipped: 0
+```
+
+Os testes cobrem convencoes de arquitetura, autorizacao explicita em controllers, configuracoes de CORS e JWT, login, geracao de token, seed de usuario inicial, mapeamento EF Core, dominio do catalogo e tratamento seguro de erro no controller de catalogo.

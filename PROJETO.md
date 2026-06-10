@@ -21,6 +21,8 @@ tests/
 
 A API .NET centraliza o backend principal do MVP. Artefatos Python, quando autorizados, devem permanecer como notebooks, scripts ou servicos auxiliares para IA/ML, visao computacional ou otimizacao, sem duplicar os endpoints principais em outro backend.
 
+Os arquivos `orbital-academy-api-architecture.svg` e `orbital-academy-flow.svg` documentam, respectivamente, a organizacao arquitetural da API e o fluxo de demonstracao da entrega.
+
 ## Camadas e responsabilidades
 
 ### OrbitalAcademy.Api

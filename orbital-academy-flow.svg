@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="720" viewBox="0 0 1400 720" role="img" aria-labelledby="title desc">
+  <title id="title">Fluxo de demonstracao do Orbital Academy Service</title>
+  <desc id="desc">Diagrama do fluxo de execucao: iniciar API, health check, Swagger, login, JWT, endpoints protegidos e indicadores.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f6f8fb; }
+      .band { fill: #0f172a; }
+      .title { fill: #0f172a; font: 700 34px Arial, sans-serif; }
+      .subtitle { fill: #475569; font: 400 18px Arial, sans-serif; }
+      .label { fill: #0f172a; font: 700 18px Arial, sans-serif; }
+      .body { fill: #334155; font: 400 14px Arial, sans-serif; }
+      .note { fill: #475569; font: 400 13px Arial, sans-serif; }
+      .card { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; }
+      .card-main { fill: #ecfeff; stroke: #0891b2; stroke-width: 2; }
+      .card-sec { fill: #f0fdf4; stroke: #16a34a; stroke-width: 2; }
+      .card-warn { fill: #fff7ed; stroke: #ea580c; stroke-width: 2; }
+      .arrow { stroke: #334155; stroke-width: 3; fill: none; marker-end: url(#arrowhead); }
+      .dash { stroke: #64748b; stroke-width: 2; stroke-dasharray: 8 8; fill: none; marker-end: url(#arrowhead); }
+      .pill { fill: #e2e8f0; }
+      .pill-text { fill: #0f172a; font: 700 12px Arial, sans-serif; }
+    </style>
+    <marker id="arrowhead" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 12 6 L 0 12 z" fill="#334155" />
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1400" height="720" />
+  <rect class="band" x="0" y="0" width="1400" height="14" />
+
+  <text class="title" x="70" y="70">Orbital Academy Service - Fluxo de Demonstracao</text>
+  <text class="subtitle" x="70" y="102">Fluxo usado para evidenciar a entrega C# sem criar regras finais de negocio ainda nao autorizadas.</text>
+
+  <rect class="card-main" x="70" y="150" width="210" height="116" rx="8" />
+  <text class="label" x="94" y="188">1. Iniciar API</text>
+  <text class="body" x="94" y="216">Docker Compose sobe API</text>
+  <text class="body" x="94" y="238">ASP.NET Core + PostgreSQL</text>
+
+  <rect class="card" x="340" y="150" width="210" height="116" rx="8" />
+  <text class="label" x="364" y="188">2. Health Check</text>
+  <text class="body" x="364" y="216">GET /api/health</text>
+  <text class="body" x="364" y="238">GET /health</text>
+
+  <rect class="card" x="610" y="150" width="210" height="116" rx="8" />
+  <text class="label" x="634" y="188">3. Swagger</text>
+  <text class="body" x="634" y="216">/swagger</text>
+  <text class="body" x="634" y="238">Contratos HTTP visiveis</text>
+
+  <rect class="card-sec" x="880" y="150" width="210" height="116" rx="8" />
+  <text class="label" x="904" y="188">4. Login</text>
+  <text class="body" x="904" y="216">POST /usuario/login</text>
+  <text class="body" x="904" y="238">Email + senha local</text>
+
+  <rect class="card-sec" x="1150" y="150" width="180" height="116" rx="8" />
+  <text class="label" x="1174" y="188">5. JWT</text>
+  <text class="body" x="1174" y="216">Token Bearer</text>
+  <text class="body" x="1174" y="238">Claims do usuario</text>
+
+  <path class="arrow" d="M 280 208 L 330 208" />
+  <path class="arrow" d="M 550 208 L 600 208" />
+  <path class="arrow" d="M 820 208 L 870 208" />
+  <path class="arrow" d="M 1090 208 L 1140 208" />
+
+  <rect class="pill" x="690" y="305" width="310" height="34" rx="17" />
+  <text class="pill-text" x="725" y="327">Authorization: Bearer &lt;token&gt;</text>
+  <path class="arrow" d="M 1240 266 C 1240 322 1040 322 1010 322" />
+
+  <rect class="card-main" x="110" y="390" width="250" height="128" rx="8" />
+  <text class="label" x="134" y="428">Catalogo espacial</text>
+  <text class="body" x="134" y="456">GET /catalogo/satelites</text>
+  <text class="body" x="134" y="478">Satelites, sensores e alertas</text>
+
+  <rect class="card-warn" x="430" y="390" width="250" height="128" rx="8" />
+  <text class="label" x="454" y="428">Risco e areas</text>
+  <text class="body" x="454" y="456">GET /areas</text>
+  <text class="body" x="454" y="478">GET /risco/ranking</text>
+  <text class="note" x="454" y="500">Contrato estrutural do MVP</text>
+
+  <rect class="card-warn" x="750" y="390" width="250" height="128" rx="8" />
+  <text class="label" x="774" y="428">Missoes</text>
+  <text class="body" x="774" y="456">GET /missoes</text>
+  <text class="body" x="774" y="478">POST /missoes</text>
+  <text class="note" x="774" y="500">Sem transicoes finais</text>
+
+  <rect class="card-warn" x="1070" y="390" width="250" height="128" rx="8" />
+  <text class="label" x="1094" y="428">Validar e otimizar</text>
+  <text class="body" x="1094" y="456">POST /validar</text>
+  <text class="body" x="1094" y="478">POST /otimizar</text>
+  <text class="note" x="1094" y="500">Aceite estrutural</text>
+
+  <path class="dash" d="M 845 340 C 845 370 235 360 235 380" />
+  <path class="dash" d="M 845 340 C 845 370 555 360 555 380" />
+  <path class="dash" d="M 845 340 C 845 370 875 360 875 380" />
+  <path class="dash" d="M 845 340 C 845 370 1195 360 1195 380" />
+
+  <rect class="card" x="520" y="585" width="360" height="72" rx="8" />
+  <text class="label" x="544" y="618">Indicadores</text>
+  <text class="body" x="544" y="642">GET /indicadores - metricas agregadas zeradas ate persistencia futura</text>
+
+  <path class="arrow" d="M 1195 518 C 1195 620 910 620 890 620" />
+
+  <text class="note" x="70" y="692">Observacao: endpoints marcados em laranja sao contratos iniciais seguros para demonstracao; regras finais dependem de autorizacao de fase futura.</text>
+</svg>
